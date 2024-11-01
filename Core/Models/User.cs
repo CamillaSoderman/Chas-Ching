@@ -1,27 +1,31 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Chas_Ching.Core.Models
 {
     public abstract class User
-    {
-        protected string UserName { get; set; }
-        protected string Password { get; set; }
-        protected bool IsLocked { get; set; } // True = låser konto
+    { // Access Modifiers. Only code in the same class or in a derived class can access protected internal members.
+        protected internal string UserEmail { get; set; }
+        protected internal string Password { get; set; } 
+        protected internal bool IsLocked { get; set; } = false;
 
-        private int loginAttempts = 0; // Räknare för inloggningsförsök
+        private int loginAttempts;
 
         protected User(string userName, string password)
         {
-            UserName = userName;
+            UserEmail = userName;
             Password = password;
-            IsLocked = false; //  False är default värde dvs. anv.konto är öppet
+            loginAttempts = 0;
         }
 
-        public abstract void Login();
-        public abstract void Logout();
+        public bool IsUserLocked() => IsLocked;
+
+        public void IncrementLoginAttempts()
+        {
+            loginAttempts++;
+            if (loginAttempts >= 3)
+            {
+                IsLocked = true;
+            }
+        }
     }
 }

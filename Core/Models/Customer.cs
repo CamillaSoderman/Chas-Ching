@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Chas_Ching.Core.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,21 +19,10 @@ namespace Chas_Ching.Core.Models
             Accounts = new List<Account>();
             Loan = Loan;
         }
-
-        public override void Login()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void Logout()
-        {
-            throw new NotImplementedException();
-        }
         public void ViewAccounts()
         {
             throw new NotImplementedException();
         }
-
         public void TransferFounds()
         {
             throw new NotImplementedException();
