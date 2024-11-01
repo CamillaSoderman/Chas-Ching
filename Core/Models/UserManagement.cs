@@ -7,16 +7,16 @@ namespace Chas_Ching.Core.Models
     {   // List of registered users
         private static List<User> registeredUsers = new List<User>();
 
-        // Find a user by username
-        public static User? FindUser(string userName)
+        // Find a user by username. StringComparison.OrdinalIgnoreCase ignores case and returns the first match. Returns null if not found.
+        public static User? FindUser(string userEmail)
         {
-            return registeredUsers.Find(user => user.UserEmail.Equals(userName, StringComparison.OrdinalIgnoreCase)); // Ignore case
+            return registeredUsers.Find(user => user.UserEmail.Equals(userEmail, StringComparison.OrdinalIgnoreCase)); 
         }
 
         // Method to verify if the user exists and is locked out. Increment login attempts if password is incorrect
-        public static bool VerifyUser(string userName, string password)
+        public static bool VerifyUser(string userEmail, string password)
         {
-            var user = FindUser(userName);
+            var user = FindUser(userEmail); // Sets user to the user object if found, otherwise null
             if (user == null)
             {
                 Console.WriteLine("User not found.");
@@ -51,53 +51,73 @@ namespace Chas_Ching.Core.Models
         // Logout metoden behöver färdigställas. Ska programmet avslutas när en användare loggar ut?
         public static void Logout(User user)
         {
-            Console.WriteLine($"User {user.UserEmail} logged out successfully.");
+            Console.WriteLine($"Thank you for using Chas-Ching bank {user.UserEmail}!");
         }
 
-        // Registers a new user with a unique username and password and
-        // optional boolean to determine if the user is a customer or admin (default is customer)
-        public static void RegisterUser(string userName, string password, bool isCustomer = true)
+        // Registers a new user with a unique username and password 
+        // The boolean is optional argument to determine if the user is a customer or admin (default is customer)
+        public static void RegisterUser(string userEmail, string password, bool isCustomer = true)
         {
-            if (FindUser(userName) != null)
+            if (FindUser(userEmail) != null)
             {
                 Console.WriteLine("Username already exists. Please choose another one.");
                 return;
             }
             // Create a new user obj based on the user type (If Customer or If Admin) 
-            User newUser = isCustomer ? new Customer(userName, password) : new Admin(userName, password);
+            User newUser = isCustomer ? new Customer(userEmail, password) : new Admin(userEmail, password);
             registeredUsers.Add(newUser);
-            Console.WriteLine($"User {userName} registered successfully.");
+            Console.WriteLine($"User {userEmail} registered successfully.");
         }
-        public static void LockAccount(string userName)
+        public static void LockAccount(string userEmail)
         {
-            var user = FindUser(userName);
+            var user = FindUser(userEmail);
             if (user != null)
             {
                 user.IsLocked = true;
-                Console.WriteLine($"User {userName} has been locked out.");
+                Console.WriteLine($"User {userEmail} has been locked out.");
             }
             else
             {
                 Console.WriteLine("User not found.");
             }
         }
-        public static void UnlockAccount(string userName)
+        public static void UnlockAccount(string userEmail)
         {
-            var user = FindUser(userName);
+            var user = FindUser(userEmail);
             if (user != null)
             {
                 user.IsLocked = false;
-                Console.WriteLine($"User {userName} has been unlocked.");
+                Console.WriteLine($"User {userEmail} has been unlocked.");
             }
             else
             {
                 Console.WriteLine("User not found.");
             }
         }
-        // Logik för att öppna ett konto
+        // Ska metoden för att öppna konto ligga här eller i Customer-klassen?
         public static void OpenAccount(User user)
         {
-            Console.WriteLine($"");
+
+            // If (user == nul)
+            // print "User not found" and return
+
+            // promt user to choose a currency type
+            // If (invalid currency type)
+            // print "Invalid currency type" and return
+
+            // prompt user to enter an initial deposit amount
+            // if (invalid amount)
+            // print "Invalid amount" and return
+
+            // create a new account object with
+            // the selected currency type
+            // initial deposit amount
+            // unique account number (with random numbers?)
+
+            // Print "Account created with ID [AccountId] and balance [Balance] [Currency]"
         }
     }
 }
+
+
+// Note. Every class is static, so no instances of the class can be created. The methods are called directly on the class.
