@@ -17,9 +17,29 @@ namespace Chas_Ching.Core.Models
         public Account FromAccount { get; set; }
         public Account ToAccount { get; set; }
         public DateTime Date { get; set; }
+        public Transaction(int transactionId, decimal amount, Account fromAccount, Account toAccount)
+        {
+            TransactionId = transactionId;
+            Amount = amount;
+            FromAccount = fromAccount;
+            ToAccount = toAccount;
+            Date = DateTime.Now;
+        }
         public void CreateTransactions()
         {
-            throw new NotImplementedException();
+            if (FromAccount.Balance >= Amount)
+            {
+                FromAccount.Balance -= Amount;
+                ToAccount.Balance += Amount;
+
+                Console.WriteLine($"Transaktionen på: {Amount} kronor är nu genomförd.");
+            }
+            else
+            {
+                Console.WriteLine("Transaktionen kunde ej genomföras, för lite pengar på kontot.");
+            }
+
+            //throw new NotImplementedException();
         }
     }
 }
