@@ -10,36 +10,55 @@ using System.Threading.Tasks;
 namespace Chas_Ching.Core.Models
 
 {
-    public class Transaction : ITransactions
+    public class Transaction /*: ITransactions*/
     {
-        public int TransactionId { get; set; }
+        public enum TransactionStatus
+        {
+            Pending,
+            Completed,
+            Failed
+        }
+        public TransactionStatus Status { get; set; }
+        CurrencyType currency = new CurrencyType();
+        public Guid TransactionId { get; set; }
+        CurrencyType Currency { get; set; }
         public decimal Amount { get; set; }
         public Account FromAccount { get; set; }
         public Account ToAccount { get; set; }
         public DateTime Date { get; set; }
-        public Transaction(int transactionId, decimal amount, Account fromAccount, Account toAccount)
+
+        public Transaction(Guid transactionId, CurrencyType currency, decimal amount, Account fromAccount, Account toAccount)
         {
             TransactionId = transactionId;
+            Currency = currency;
             Amount = amount;
             FromAccount = fromAccount;
             ToAccount = toAccount;
             Date = DateTime.Now;
+            Status = TransactionStatus.Pending;
         }
-        public void CreateTransactions()
+        public void ProcessTransaction()
         {
+            //Check if accounts exist
+            if (FromAccount == null || ToAccount == null)
+            {
+                Console.WriteLine("Invalid Account, Transaction failed.");
+                Status = TransactionStatus.Failed;
+                return;
+            }
             if (FromAccount.Balance >= Amount)
             {
                 FromAccount.Balance -= Amount;
                 ToAccount.Balance += Amount;
-
-                Console.WriteLine($"Transaktionen på: {Amount} kronor är nu genomförd.");
+                Status = TransactionStatus.Completed;
+                Console.WriteLine($"Transaction of {Amount} {Currency} completed successfully. ");
             }
             else
             {
-                Console.WriteLine("Transaktionen kunde ej genomföras, för lite pengar på kontot.");
+                Console.WriteLine("Transaction failed: Insufficient funds.");
+                Status = TransactionStatus.Failed;
             }
 
-            //throw new NotImplementedException();
         }
     }
 }

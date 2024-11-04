@@ -14,11 +14,11 @@ namespace Chas_Ching.Core.Models
         public decimal Balance { get; set; }
         public CurrencyType Currency { get; set; }
 
-        public Account(int accountNumber, decimal initialBalance)
+        public Account(int accountNumber, decimal initialBalance, CurrencyType currency)
         {
             AccountId = accountNumber;
             Balance = initialBalance;
-            //Currency = currency;
+            Currency = currency;
         }
         public void GetBalance()
         {
