@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Chas_Ching.Core.Enums;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.Tracing;
 using System.Linq;
@@ -25,6 +26,7 @@ namespace Chas_Ching.Core.Models
             
             Loan = Loan;
         }
+
 
         // Promts the user to enter a innitail balance and creates new Account.
         public void OpenAccount()
@@ -77,6 +79,8 @@ namespace Chas_Ching.Core.Models
             {
                 throw new NotImplementedException();
             }
+
+      
         }
 
         
