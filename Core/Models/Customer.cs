@@ -14,6 +14,7 @@ namespace Chas_Ching.Core.Models
 
         // Declare Accounts as a list of type Account
         public List<Account> Accounts { get; set; }
+        
         public decimal Loan { get; set; }
 
         //Constructor
@@ -21,10 +22,11 @@ namespace Chas_Ching.Core.Models
         {
             // Initialize Accounts-list
             Accounts = new List<Account>();
+            
             Loan = Loan;
         }
 
-
+        // Promts the user to enter a innitail balance and creates new Account.
         public void OpenAccount()
         {
             Console.WriteLine("Enter the initial balance for the new account: ");
@@ -37,10 +39,10 @@ namespace Chas_Ching.Core.Models
 
             var newAccount = new Account(Accounts.Count + 1, initialBalamce);
             Accounts.Add(newAccount);
-            Console.WriteLine¤($"Acount created with ID {newAccount.ID} and balance {newAccount.Balance}");
+            Console.WriteLine¤($"Account created with ID {newAccount.ID} and balance {newAccount.Balance}");
         }
 
-        //Method for viewing accounts
+        //Method displays all accounts and their balances
         public void ViewAccounts()
         {
             Console.WriteLine("Viewing accounts...");
@@ -55,26 +57,33 @@ namespace Chas_Ching.Core.Models
                     Console.WriteLine($"Account ID: {account.ID}, Balance: {account.Balance}");
 
             }
+
+            //Placeholders for future implementation
             public void TransferFounds()
-        {
-            throw new NotImplementedException();
+            {
+           
+
+            }
+
+            //Placeholders for future implementation
+            public void RequestLoan()
+            {
+          
+            }
+
+            //Placeholders for future implementation
+
+            public void ViewTransaction()
+            {
+                throw new NotImplementedException();
+            }
         }
 
-
-        public void RequestLoan()
+        
+        //Tillfälligt Account class för att om det funkar
+        // Kanske en bra ide att använda Guid för ID?
+        public class Account
         {
-            throw new NotImplementedException();
-        }
-
-
-        public void ViewTransaction()
-        {
-            throw new NotImplementedException();
-        }
-    }
-    // Kanske en bra ide att använda Guid för ID?
-    public class Account
-    {
         public ID { get; set; }
         public decimal Balance { get; set; }
 
