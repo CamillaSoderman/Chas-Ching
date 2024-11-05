@@ -14,7 +14,16 @@ namespace Chas_Ching.Core.Models
         public decimal Balance { get; set; }
         public CurrencyType Currency { get; set; }
 
+
         // Method to get the balance of an account
+
+        public Account(int accountNumber, decimal initialBalance, CurrencyType currency)
+        {
+            AccountId = accountNumber;
+            Balance = initialBalance;
+            Currency = currency;
+        }
+
         public void GetBalance()
         {
             Console.WriteLine($"Current balance: {Balance}");
