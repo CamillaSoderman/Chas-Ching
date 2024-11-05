@@ -14,22 +14,54 @@ namespace Chas_Ching.Core.Models
         public decimal Balance { get; set; }
         public CurrencyType Currency { get; set; }
 
+        // Method to get the balance of an account
         public void GetBalance()
         {
-            throw new NotImplementedException();
+            Console.WriteLine($"Current balance: {Balance}");
         }
+        
+        // Method to deposit money into an account
         public void Deposit()
         {
-            throw new NotImplementedException();
+            Console.Write("Enter amount to deposit: ");
+            decimal amount = Convert.ToDecimal(Console.ReadLine());
+            Balance += amount;
+            Console.WriteLine($"Deposit successful. New balance: {Balance}");
         }
+        
+        // Method to withdraw money from an account
         public void Withdraw()
         {
-            throw new NotImplementedException();
+            Console.Write("Enter amount to withdraw: ");
+            decimal amount = Convert.ToDecimal(Console.ReadLine());
+            if (amount > Balance)
+            {
+                Console.WriteLine("Insufficient funds");
+            }
+            else
+            {
+                Balance -= amount;
+                Console.WriteLine($"Withdrawal successful. New balance: {Balance}");
+            }
         }
+        
+        // Method to transfer money from one account to another
         public void Transfer()
         {
-            throw new NotImplementedException();
+            Console.Write("Enter amount to transfer: ");
+            decimal amount = Convert.ToDecimal(Console.ReadLine());
+            if (amount > Balance)
+            {
+                Console.WriteLine("Insufficient funds");
+            }
+            else
+            {
+                Balance -= amount;
+                Console.WriteLine($"Transfer successful. New balance: {Balance}");
+            }
+            
         }
+        
         public void Saldo()
         {
             throw new NotImplementedException();
