@@ -11,11 +11,14 @@ namespace Chas_Ching.Core.Models
 {
     public class Customer : User
     {
+        Random randomID = new Random();
+        int userRandomId;
+
         //KRAV: Som användare vill jag kunna se en lista med alla mina bankkonton och saldot på dessa.
 
         // Declare Accounts as a list of type Account
         public List<Account> Accounts { get; set; }
-        
+
         public decimal Loan { get; set; }
 
         //Constructor
@@ -23,8 +26,9 @@ namespace Chas_Ching.Core.Models
         {
             // Initialize Accounts-list
             Accounts = new List<Account>();
-            
+
             Loan = Loan;
+            userRandomId = randomID.Next(1000, 9999);
         }
 
 
@@ -32,16 +36,16 @@ namespace Chas_Ching.Core.Models
         public void OpenAccount()
         {
             Console.WriteLine("Enter the initial balance for the new account: ");
-            decimal initialBalamce;
+            decimal initialBalance;
 
-            while (!decimal.TryParse(Console.ReadLine(), out initialBalamce) || initialBalamce < 0)
+            while (!decimal.TryParse(Console.ReadLine(), out initialBalance) || initialBalance < 0)
             {
                 Console.WriteLine("Invalid inpuut. Plaese enter a non-negativ number: ");
             }
 
-            var newAccount = new Account(Accounts.Count + 1, initialBalamce);
+            var newAccount = new Account(userRandomId, initialBalance, CurrencyType.SEK);
             Accounts.Add(newAccount);
-            Console.WriteLine¤($"Account created with ID {newAccount.ID} and balance {newAccount.Balance}");
+            Console.WriteLine($"Account created with ID {newAccount.AccountId} and balance {newAccount.Balance}{CurrencyType.SEK}");
         }
 
         //Method displays all accounts and their balances
@@ -56,45 +60,29 @@ namespace Chas_Ching.Core.Models
             else
             {
                 foreach (var account in Accounts)
-                    Console.WriteLine($"Account ID: {account.ID}, Balance: {account.Balance}");
+                    Console.WriteLine($"Account ID: {account.AccountId}, Balance: {account.Balance}");
 
             }
+        }
+        //Placeholders for future implementation
+        public void TransferFounds()
+        {
+            throw new NotImplementedException();
 
-            //Placeholders for future implementation
-            public void TransferFounds()
-            {
-           
-
-            }
-
-            //Placeholders for future implementation
-            public void RequestLoan()
-            {
-          
-            }
-
-            //Placeholders for future implementation
-
-            public void ViewTransaction()
-            {
-                throw new NotImplementedException();
-            }
-
-      
         }
 
-        
-        //Tillfälligt Account class för att om det funkar
-        // Kanske en bra ide att använda Guid för ID?
-        public class Account
+        //Placeholders for future implementation
+        public void RequestLoan()
         {
-        public ID { get; set; }
-        public decimal Balance { get; set; }
+            throw new NotImplementedException();
+        }
 
-        public Account()
+        //Placeholders for future implementation
+
+        public void ViewTransaction()
         {
-           ID = id;
-           Balance = Balance;
+            throw new NotImplementedException();
+
 
         }
     }

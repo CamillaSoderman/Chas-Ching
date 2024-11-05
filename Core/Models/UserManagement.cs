@@ -56,7 +56,7 @@ namespace Chas_Ching.Core.Models
 
         // Registers a new user with a unique username and password 
         // The boolean is optional argument to determine if the user is a customer or admin (default is customer)
-        public static void RegisterUser(string userEmail, string password, bool isCustomer = true)
+        public static void RegisterUser(string userEmail, string password)
         {
             if (FindUser(userEmail) != null)
             {
@@ -64,7 +64,7 @@ namespace Chas_Ching.Core.Models
                 return;
             }
             // Create a new user obj based on the user type (If Customer or If Admin) 
-            User newUser = isCustomer ? new Customer(userEmail, password) : new Admin(userEmail, password);
+            User newUser = new Customer(userEmail, password);
             registeredUsers.Add(newUser);
             Console.WriteLine($"User {userEmail} registered successfully.");
         }
