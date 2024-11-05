@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Chas_Ching.Core.Models
 {
-    public class Account : IAccount
+    public class Account
     {
         public int AccountId { get; set; }
         public decimal Balance { get; set; }
@@ -21,19 +21,22 @@ namespace Chas_Ching.Core.Models
         }
         
         // Method to deposit money into an account
-        public void Deposit()
+        public void Deposit(decimal amount)
         {
-            Console.Write("Enter amount to deposit: ");
-            decimal amount = Convert.ToDecimal(Console.ReadLine());
-            Balance += amount;
-            Console.WriteLine($"Deposit successful. New balance: {Balance}");
+            if (amount <= 0)
+            {
+                Console.WriteLine("Invalid amount");
+            }
+            else
+            {
+                Balance += amount;
+                Console.WriteLine($"Deposit successful. New balance: {Balance}");
+            }
         }
         
         // Method to withdraw money from an account
-        public void Withdraw()
+        public void Withdraw(decimal amount)
         {
-            Console.Write("Enter amount to withdraw: ");
-            decimal amount = Convert.ToDecimal(Console.ReadLine());
             if (amount > Balance)
             {
                 Console.WriteLine("Insufficient funds");
@@ -46,10 +49,8 @@ namespace Chas_Ching.Core.Models
         }
         
         // Method to transfer money from one account to another
-        public void Transfer()
+        public void Transfer(decimal amount)
         {
-            Console.Write("Enter amount to transfer: ");
-            decimal amount = Convert.ToDecimal(Console.ReadLine());
             if (amount > Balance)
             {
                 Console.WriteLine("Insufficient funds");
