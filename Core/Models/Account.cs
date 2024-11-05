@@ -8,11 +8,14 @@ using System.Threading.Tasks;
 
 namespace Chas_Ching.Core.Models
 {
-    public class Account : IAccount
+    public class Account
     {
         public int AccountId { get; set; }
         public decimal Balance { get; set; }
         public CurrencyType Currency { get; set; }
+
+
+        // Method to get the balance of an account
 
         public Account(int accountNumber, decimal initialBalance, CurrencyType currency)
         {
@@ -20,22 +23,55 @@ namespace Chas_Ching.Core.Models
             Balance = initialBalance;
             Currency = currency;
         }
+
         public void GetBalance()
         {
-            throw new NotImplementedException();
+            Console.WriteLine($"Current balance: {Balance}");
         }
-        public void Deposit()
+        
+        // Method to deposit money into an account
+        public void Deposit(decimal amount)
         {
-            throw new NotImplementedException();
+            if (amount <= 0)
+            {
+                Console.WriteLine("Invalid amount");
+            }
+            else
+            {
+                Balance += amount;
+                Console.WriteLine($"Deposit successful. New balance: {Balance}");
+            }
         }
-        public void Withdraw()
+        
+        // Method to withdraw money from an account
+        public void Withdraw(decimal amount)
         {
-            throw new NotImplementedException();
+            if (amount > Balance)
+            {
+                Console.WriteLine("Insufficient funds");
+            }
+            else
+            {
+                Balance -= amount;
+                Console.WriteLine($"Withdrawal successful. New balance: {Balance}");
+            }
         }
-        public void Transfer()
+        
+        // Method to transfer money from one account to another
+        public void Transfer(decimal amount)
         {
-            throw new NotImplementedException();
+            if (amount > Balance)
+            {
+                Console.WriteLine("Insufficient funds");
+            }
+            else
+            {
+                Balance -= amount;
+                Console.WriteLine($"Transfer successful. New balance: {Balance}");
+            }
+            
         }
+        
         public void Saldo()
         {
             throw new NotImplementedException();
