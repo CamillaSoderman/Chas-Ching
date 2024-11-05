@@ -71,10 +71,5 @@ namespace Chas_Ching.Core.Models
             }
             
         }
-        
-        public void Saldo()
-        {
-            throw new NotImplementedException();
-        }
     }
 }
