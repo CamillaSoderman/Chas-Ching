@@ -12,6 +12,5 @@ namespace Chas_Ching.Core.Interfaces
         public void Deposit();
         public void Withdraw();
         public void Transfer();
-        public void Saldo();
     }
 }

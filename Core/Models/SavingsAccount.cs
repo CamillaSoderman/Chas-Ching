@@ -10,11 +10,9 @@ public class SavingsAccount : Account
 {
     public decimal InterestRate { get; set; } = 2.5m; // Annual Interest Rate in % (Changeable)
     
-    public SavingsAccount(int accountID, decimal balance, CurrencyType currency)
+    public SavingsAccount(string accountId, decimal balance, CurrencyType currency) : base(accountId, balance, currency)
     {
-        AccountId = accountID;
-        Balance = balance;
-        Currency = currency;
+       
     }
     
     // Method to calculate interest on a deposit into a savings account

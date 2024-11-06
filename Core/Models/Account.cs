@@ -10,23 +10,26 @@ namespace Chas_Ching.Core.Models
 {
     public class Account
     {
-        public int AccountId { get; set; }
+        public string AccountId { get; set; }
         public decimal Balance { get; set; }
         public CurrencyType Currency { get; set; }
 
 
         // Method to get the balance of an account
 
-        public Account(int accountNumber, decimal initialBalance, CurrencyType currency)
+        public Account(string accountId, decimal balance, CurrencyType currency)
         {
-            AccountId = accountNumber;
-            Balance = initialBalance;
+            AccountId = accountId;
+            Balance = balance;
             Currency = currency;
         }
 
-        public void GetBalance()
+        public void GetBalance(List<Account> accounts)
         {
-            Console.WriteLine($"Current balance: {Balance}");
+            foreach (var account in accounts )
+            {
+                Console.WriteLine($"Current balance: {Balance}");
+            }
         }
         
         // Method to deposit money into an account
@@ -70,11 +73,6 @@ namespace Chas_Ching.Core.Models
                 Console.WriteLine($"Transfer successful. New balance: {Balance}");
             }
             
-        }
-        
-        public void Saldo()
-        {
-            throw new NotImplementedException();
         }
     }
 }
