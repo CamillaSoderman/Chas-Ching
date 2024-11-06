@@ -20,21 +20,24 @@ namespace Chas_Ching.Core.Models
         public TransactionStatus Status { get; set; }
         CurrencyType currency = new CurrencyType();
         public Guid TransactionId { get; set; }
-        CurrencyType Currency { get; set; }
         public decimal Amount { get; set; }
         public Account FromAccount { get; set; }
         public Account ToAccount { get; set; }
         public DateTime Date { get; set; }
+        public CurrencyType FromCurrency { get; private set; }
+        public CurrencyType ToCurrency { get; private set; }
 
-        public Transaction(Guid transactionId, CurrencyType currency, decimal amount, Account fromAccount, Account toAccount)
+        public Transaction(decimal amount, Account fromAccount, Account toAccount)
         {
-            TransactionId = transactionId;
-            Currency = currency;
             Amount = amount;
             FromAccount = fromAccount;
             ToAccount = toAccount;
+
+            TransactionId = Guid.NewGuid();
             Date = DateTime.Now;
             Status = TransactionStatus.Pending;
+            FromCurrency = fromAccount.Currency;
+            ToCurrency = toAccount.Currency;
         }
         public void ProcessTransaction()
         {
