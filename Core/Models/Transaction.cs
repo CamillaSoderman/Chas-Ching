@@ -1,6 +1,6 @@
 ﻿
 using Chas_Ching.Core.Enums;
-using Chas_Ching.Core.Interfaces;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Chas_Ching.Core.Models
 
 {
-    public class Transaction /*: ITransactions*/
+    public class Transaction 
     {
         public enum TransactionStatus
         {
