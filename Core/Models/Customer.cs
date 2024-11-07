@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Chas_Ching.Core.Enums;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.Tracing;
 using System.Linq;
@@ -10,7 +11,6 @@ namespace Chas_Ching.Core.Models
 {
     public class Customer : User
     {
-        // Instance of Random to generate random IDs
 
         static Random randomID = new Random();
 
@@ -19,7 +19,6 @@ namespace Chas_Ching.Core.Models
         // List to store accounts associated with the customer
         public List<Account> Accounts { get; set; }
 
-        // Property to store the loan amount for the customer
         public decimal Loan { get; set; }
 
         // Constructor to initialize Customer object with email and password
@@ -74,7 +73,6 @@ namespace Chas_Ching.Core.Models
             {
                 newAccountId = GenerateUserId();
             } while (Accounts.Any(a => a.AccountId == newAccountId));
-
 
             // Create a new account and add it to the Accounts list
             var newAccount = new Account(newAccountId, initialBalance, selectedCurrency);
@@ -136,6 +134,7 @@ namespace Chas_Ching.Core.Models
         }
 
 
+
         // Method to transfer funds between the customer's own accounts
         public void TransferBetweenOwnAccounts()
         {
@@ -153,6 +152,11 @@ namespace Chas_Ching.Core.Models
                 Console.WriteLine("Invalid source account ID. Please try again.");
                 return;
             }
+        }
+        //Placeholders for future implementation
+        public void TransferFounds()
+        {
+            throw new NotImplementedException();
 
             Console.Write("Enter destination account ID: ");
             if (!int.TryParse(Console.ReadLine(), out int toAccountId))

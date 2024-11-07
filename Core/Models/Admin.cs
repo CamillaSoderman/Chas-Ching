@@ -17,16 +17,6 @@ namespace Chas_Ching.Core.Models
             // Initiera Accounts-listan
             CurrentExchangeRates = new Dictionary<CurrencyType, decimal>();
         }
-
-        public override void Login()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void Logout()
-        {
-            throw new NotImplementedException();
-        }
         public void CreateUser()
         {
             throw new NotImplementedException();
