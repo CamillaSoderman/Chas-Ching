@@ -48,19 +48,28 @@ namespace Chas_Ching.Core.Models
                 Status = TransactionStatus.Failed;
                 return;
             }
-            if (FromAccount.Balance >= Amount)
+
+            decimal amountToDeduct = Amount;
+            decimal amountToCredit = Amount;
+
+            if (FromCurrency != ToCurrency)
             {
-                FromAccount.Balance -= Amount;
-                ToAccount.Balance += Amount;
+                amountToCredit = CurrencyExchange.Convert(Amount, FromCurrency, ToCurrency);
+            }
+
+            if (FromAccount.Balance >= amountToDeduct)
+            {
+                FromAccount.Balance -= amountToDeduct;
+                ToAccount.Balance += amountToCredit;
                 Status = TransactionStatus.Completed;
-                Console.WriteLine($"Transaction of {Amount} {Currency} completed successfully. ");
+                Console.WriteLine($"Transaction of {Amount} {FromCurrency} from Account {FromAccount.AccountId} to account {ToAccount.AccountId}  successfully. ");
             }
             else
             {
                 Console.WriteLine("Transaction failed: Insufficient funds.");
                 Status = TransactionStatus.Failed;
             }
-
+            TransactionLog.LogTransaction(this);
         }
     }
 }
