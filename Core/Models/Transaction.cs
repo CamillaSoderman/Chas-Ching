@@ -20,21 +20,24 @@ namespace Chas_Ching.Core.Models
         public TransactionStatus Status { get; set; }
         CurrencyType currency = new CurrencyType();
         public Guid TransactionId { get; set; }
-        CurrencyType Currency { get; set; }
         public decimal Amount { get; set; }
         public Account FromAccount { get; set; }
         public Account ToAccount { get; set; }
         public DateTime Date { get; set; }
+        public CurrencyType FromCurrency { get; private set; }
+        public CurrencyType ToCurrency { get; private set; }
 
-        public Transaction(Guid transactionId, CurrencyType currency, decimal amount, Account fromAccount, Account toAccount)
+        public Transaction(decimal amount, Account fromAccount, Account toAccount)
         {
-            TransactionId = transactionId;
-            Currency = currency;
             Amount = amount;
             FromAccount = fromAccount;
             ToAccount = toAccount;
+
+            TransactionId = Guid.NewGuid();
             Date = DateTime.Now;
             Status = TransactionStatus.Pending;
+            FromCurrency = fromAccount.Currency;
+            ToCurrency = toAccount.Currency;
         }
         public void ProcessTransaction()
         {
@@ -45,19 +48,28 @@ namespace Chas_Ching.Core.Models
                 Status = TransactionStatus.Failed;
                 return;
             }
-            if (FromAccount.Balance >= Amount)
+
+            decimal amountToDeduct = Amount;
+            decimal amountToCredit = Amount;
+
+            if (FromCurrency != ToCurrency)
             {
-                FromAccount.Balance -= Amount;
-                ToAccount.Balance += Amount;
+                amountToCredit = CurrencyExchange.Convert(Amount, FromCurrency, ToCurrency);
+            }
+
+            if (FromAccount.Balance >= amountToDeduct)
+            {
+                FromAccount.Balance -= amountToDeduct;
+                ToAccount.Balance += amountToCredit;
                 Status = TransactionStatus.Completed;
-                Console.WriteLine($"Transaction of {Amount} {Currency} completed successfully. ");
+                Console.WriteLine($"Transaction of {Amount} {FromCurrency} from Account {FromAccount.AccountId} to account {ToAccount.AccountId}  successfully. ");
             }
             else
             {
                 Console.WriteLine("Transaction failed: Insufficient funds.");
                 Status = TransactionStatus.Failed;
             }
-
+            TransactionLog.LogTransaction(this);
         }
     }
 }
