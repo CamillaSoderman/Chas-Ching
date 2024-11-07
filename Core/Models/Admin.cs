@@ -21,7 +21,7 @@ namespace Chas_Ching.Core.Models
         {
             throw new NotImplementedException();
         }
-
+        
         public void UpdateExchangeRates()
         {
             throw new NotImplementedException();

@@ -15,7 +15,7 @@ namespace Chas_Ching.Core.Models
         public TransactionScheduler()
         {
             pendingTransactions = new Queue<Transaction>();
-            processingInterval = TimeSpan.FromMinutes(0.3);
+            processingInterval = TimeSpan.FromMinutes(0.1);
             locker = new object();
         }
         public void EnqueueTransaction(Transaction transaction)
@@ -50,7 +50,7 @@ namespace Chas_Ching.Core.Models
             ProcessPendingTransactions();
         }
 
-        private void ProcessPendingTransactions()
+        public void ProcessPendingTransactions()
         {
             List<Transaction> failedTransactions = new List<Transaction>();
 
