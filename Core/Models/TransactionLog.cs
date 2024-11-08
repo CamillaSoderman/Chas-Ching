@@ -24,6 +24,5 @@ namespace Chas_Ching.Core.Models
         {
             return transactions.Where(t => t.FromAccount.AccountId == accountId || t.ToAccount.AccountId == accountId).ToList();
         }
-        
     }
 }

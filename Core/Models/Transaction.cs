@@ -26,6 +26,8 @@ namespace Chas_Ching.Core.Models
         public DateTime Date { get; set; }
         public CurrencyType FromCurrency { get; private set; }
         public CurrencyType ToCurrency { get; private set; }
+        public int RetryCount { get; set; } = 0;
+        public const int MaxRetries = 3;
 
         public Transaction(decimal amount, Account fromAccount, Account toAccount)
         {

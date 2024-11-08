@@ -15,7 +15,7 @@ namespace Chas_Ching.Core.Models
         public TransactionScheduler()
         {
             pendingTransactions = new Queue<Transaction>();
-            processingInterval = TimeSpan.FromMinutes(0.1);
+            processingInterval = TimeSpan.FromMinutes(0.5);
             locker = new object();
         }
         public void EnqueueTransaction(Transaction transaction)
@@ -52,7 +52,7 @@ namespace Chas_Ching.Core.Models
 
         public void ProcessPendingTransactions()
         {
-            List<Transaction> failedTransactions = new List<Transaction>();
+            List<Transaction> retryTransactions = new List<Transaction>();
 
             lock (locker)
             {
@@ -62,16 +62,34 @@ namespace Chas_Ching.Core.Models
                     try
                     {
                         transaction.ProcessTransaction();
-                        Console.WriteLine($"Transaction {transaction.TransactionId} processed successfully.");
+
+                        if (transaction.Status == Transaction.TransactionStatus.Completed)
+                        {
+                            Console.WriteLine($"Transaction {transaction.TransactionId} processed successfully.");
+                        }
+                        else
+                        {
+                            throw new Exception("Transaction failed during processing");
+                        }
                     }
                     catch(Exception ex)
                     {
+                        transaction.RetryCount++;
                         Console.WriteLine($"Transaction {transaction.TransactionId} failed: {ex.Message}.");
-                        transaction.Status = Transaction.TransactionStatus.Failed;
-                        failedTransactions.Add(transaction);
+
+                        if (transaction.RetryCount < Transaction.MaxRetries)
+                        {
+                            retryTransactions.Add(transaction);
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Transaction {transaction.TransactionId} reached max retry limit");
+                            transaction.Status = Transaction.TransactionStatus.Failed;
+                            TransactionLog.LogTransaction(transaction);
+                        }
                     }
                 }
-                foreach (var failedTransaction in failedTransactions) //Infinite retries, fix
+                foreach (var failedTransaction in retryTransactions) 
                 {
                     pendingTransactions.Enqueue(failedTransaction);
                 }
