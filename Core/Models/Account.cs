@@ -1,9 +1,4 @@
 ﻿using Chas_Ching.Core.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Chas_Ching.Core.Models
 {
@@ -12,24 +7,50 @@ namespace Chas_Ching.Core.Models
         public int AccountId { get; set; }
         public decimal Balance { get; set; }
         public CurrencyType Currency { get; set; }
+        public AccountType Type { get; set; } // AccountType is an enum with BankAccount, LoanAccount and SavingsAccount
+        public decimal PendingAmount { get; set; } = 0; // Reserved amount to avoid overdraft when a pending transaction is ongoing
 
-        // Method to get the balance of an account
-
-        public Account(int accountNumber, decimal initialBalance, CurrencyType currency)
+        public Account(int accountNumber, decimal initialBalance, CurrencyType currency, AccountType type = AccountType.BankAccount)
         {
             AccountId = accountNumber;
             Balance = initialBalance;
             Currency = currency;
+            Type = type;
         }
 
-        public void GetBalance()
-        {
-            Console.WriteLine($"Current balance: {Balance}");
+        public decimal GetBalance()
+        {   // Return the balance minus the pending amount
+            return Balance - PendingAmount;
         }
 
-        // Method to deposit money into an account
+        public void Withdraw(decimal amount)
+        {   // Method to withdraw money from an account
+            if (amount <= Balance)
+            {
+                Balance -= amount;
+                // When the withdrawal is complete, also decrease the PendingAmount
+                PendingAmount = Math.Max(0, PendingAmount - amount);
+            }
+        }
+
+        public bool ReserveFunds(decimal amount)
+        {   // Reerv funds to avoid overdraft when a pending transaction is ongoing
+            if (GetBalance() >= amount)
+            {
+                PendingAmount += amount;
+                return true;
+            }
+            return false;
+        }
+
+        public void ReleaseFunds(decimal amount)
+        {   // Release reserved funds when a transaction is completed
+            PendingAmount -= amount;
+        }
+
+        /* Borttagna metoder. Transfer sker via Transaction-klassen. Deposit används för nuvarande inte
         public void Deposit(decimal amount)
-        {
+        {   // Method to deposit money into an account
             if (amount <= 0)
             {
                 Console.WriteLine("Invalid amount");
@@ -41,44 +62,46 @@ namespace Chas_Ching.Core.Models
             }
         }
 
-        // Method to withdraw money from an account
-        public void Withdraw(decimal amount)
-        {
-            if (amount > Balance)
+        public bool Transfer(decimal amount, Account toAccount, TransactionScheduler scheduler)
+        {   // Method to transfer money from one account to another
+            if (amount <= 0 || amount > Balance)
             {
-                Console.WriteLine("Insufficient funds");
+                return false;
             }
-            else
-            {
-                Balance -= amount;
-                Console.WriteLine($"Withdrawal successful. New balance: {Balance}");
-            }
+
+            // Skapa transaktionen och lägg den i kön istället för att genomföra den direkt
+            var transaction = new Transaction(amount, this, toAccount);
+            scheduler.EnqueueTransaction(transaction);
+            return true;
         }
 
         public bool TransferOwnAccounts(decimal amount, Account toAccount)
-        {
-            if (amount <= 0 || amount > Balance)
-            { return false; }
-
-            this.Balance -= amount; toAccount.Balance += amount; return true;
-        }
-
-
-
-        //}
-        // Method to transfer money from one account to another
-        public void Transfer(decimal amount)
-        {
-            if (amount > Balance)
+        {   // Ändrar från direktöverföring till väntande överföring
+            if (amount <= 0 || amount > GetBalance())
             {
-                Console.WriteLine("Insufficient funds");
-            }
-            else
-            {
-                Balance -= amount;
-                Console.WriteLine($"Transfer successful. New balance: {Balance}");
+                return false;
             }
 
+            decimal convertedAmount = amount;
+            if (Currency != toAccount.Currency)
+            {
+                try
+                {
+                    convertedAmount = CurrencyExchange.Convert(amount, Currency, toAccount.Currency);
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
+
+            if (!ReserveFunds(amount))
+            {
+                return false;
+            }
+
+            return true;
         }
+         */
     }
 }

@@ -1,29 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Chas_Ching.Core.Models
+﻿namespace Chas_Ching.Core.Models
 {
-    internal class TransactionLog
+    public static class TransactionLog
     {
-        private static List<Transaction> transactions = new List<Transaction>();
+        public static List<Transaction> transactions = new List<Transaction>();
 
         public static void LogTransaction(Transaction transaction)
         {
             transactions.Add(transaction);
         }
 
-        public static List<Transaction> GetTransactionHistory()
-        {
-            return new List<Transaction>(transactions);
+        public static List<Transaction> GetTransactionHistory(Account account)
+        {   // Retrieves transactions involving the given account as either sender or receiver.
+            return transactions.Where(t =>
+                t.FromAccount.AccountId == account.AccountId ||
+                t.ToAccount.AccountId == account.AccountId).ToList();
         }
 
+        /* // Metoden används inte. Logiken är flyttad till GetTransactionHistory(Account account)
         public static List<Transaction> GetTransactionsForAccount(int accountId)
         {
             return transactions.Where(t => t.FromAccount.AccountId == accountId || t.ToAccount.AccountId == accountId).ToList();
         }
-        
+         */
     }
 }
+
+/// <summary>
+/// Get TransactionHistory
+/// Retrieves the transaction history for a given account, filtering transactions where the account
+/// is either the source (FromAccount) or destination (ToAccount).
+/// </summary>
