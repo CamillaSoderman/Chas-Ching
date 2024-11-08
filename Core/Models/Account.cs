@@ -13,7 +13,6 @@ namespace Chas_Ching.Core.Models
         public decimal Balance { get; set; }
         public CurrencyType Currency { get; set; }
 
-
         // Method to get the balance of an account
 
         public Account(int accountNumber, decimal initialBalance, CurrencyType currency)
@@ -27,7 +26,7 @@ namespace Chas_Ching.Core.Models
         {
             Console.WriteLine($"Current balance: {Balance}");
         }
-        
+
         // Method to deposit money into an account
         public void Deposit(decimal amount)
         {
@@ -41,7 +40,7 @@ namespace Chas_Ching.Core.Models
                 Console.WriteLine($"Deposit successful. New balance: {Balance}");
             }
         }
-        
+
         // Method to withdraw money from an account
         public void Withdraw(decimal amount)
         {
@@ -55,7 +54,18 @@ namespace Chas_Ching.Core.Models
                 Console.WriteLine($"Withdrawal successful. New balance: {Balance}");
             }
         }
-        
+
+        public bool TransferOwnAccounts(decimal amount, Account toAccount)
+        {
+            if (amount <= 0 || amount > Balance)
+            { return false; }
+
+            this.Balance -= amount; toAccount.Balance += amount; return true;
+        }
+
+
+
+        //}
         // Method to transfer money from one account to another
         public void Transfer(decimal amount, Account toAccount, TransactionScheduler schedular)
         {
@@ -65,8 +75,7 @@ namespace Chas_Ching.Core.Models
                 return;
             }
 
-            Transaction transaction = new Transaction(amount, this, toAccount);
-            schedular.EnqueueTransaction(transaction);
+
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace Chas_Ching.Core.Models
 {
@@ -10,7 +11,7 @@ namespace Chas_Ching.Core.Models
         // Find a user by username. StringComparison.OrdinalIgnoreCase ignores case and returns the first match. Returns null if not found.
         public static User? FindUser(string userEmail)
         {
-            return registeredUsers.Find(user => user.UserEmail.Equals(userEmail, StringComparison.OrdinalIgnoreCase)); 
+            return registeredUsers.Find(user => user.UserEmail.Equals(userEmail, StringComparison.OrdinalIgnoreCase));
         }
 
         // Method to verify if the user exists and is locked out. Increment login attempts if password is incorrect
@@ -54,19 +55,87 @@ namespace Chas_Ching.Core.Models
             Console.WriteLine($"Thank you for using Chas-Ching bank {user.UserEmail}!");
         }
 
-        // Registers a new user with a unique username and password 
-        // The boolean is optional argument to determine if the user is a customer or admin (default is customer)
-        public static void RegisterUser(string userEmail, string password)
+
+        public static void RegisterUser()
         {
-            if (FindUser(userEmail) != null)
+            string userEmail;
+            string password;
+
+            do
             {
-                Console.WriteLine("Username already exists. Please choose another one.");
-                return;
-            }
+                Console.Write("Enter email: ");
+                userEmail = Console.ReadLine();
+
+
+                if (!IsValidEmail(userEmail))
+                {
+                    Console.WriteLine("Invalid email address. Please provide a valid email.");
+
+                }
+                else if (FindUser(userEmail) != null)
+                {
+                    Console.WriteLine("Username already exists. Please choose another one.");
+
+                }
+                else
+                {
+                    break;
+
+                }
+
+            } while (true);
+
+            bool isPasswordValid = false;
+            do
+            {
+                Console.Write("Enter password: ");
+                password = Console.ReadLine();
+
+
+                if (IsPasswordValid(password))
+                {
+                    isPasswordValid = true;
+
+                }
+
+            } while (!isPasswordValid);
+
             // Create a new user obj based on the user type (If Customer or If Admin) 
             User newUser = new Customer(userEmail, password);
             registeredUsers.Add(newUser);
             Console.WriteLine($"User {userEmail} registered successfully.");
+
+
+        }
+
+        // Method takes an email string as input and returns true if the email is valid otherwise false.
+        public static bool IsValidEmail(string email)
+        {
+            //Basic regex to validate the email format
+            string pattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+
+            Regex regex = new Regex(pattern);
+            return regex.IsMatch(email);
+        }
+
+        public static bool IsPasswordValid(string password)
+        {
+            // Check if the password is less than 5 characters
+            if (password.Length < 5)
+            {
+                Console.WriteLine("Password invalid.\n Must be at least 5 characters long , contain uppercase letters, lowercase letters, and special characters.");
+                return false;
+            }
+
+            // Check if the password meets the other criteria (uppercase, lowercase, special character)
+            if (!(password.Any(char.IsUpper) && password.Any(char.IsLower) && password.Any(ch => "!@#$%^&*()_+[]{}|/;:,.<>?".Contains(ch))))
+            {
+                Console.WriteLine("Password invalid. Must contain uppercase letters, lowercase letters, and special characters.");
+                return false;
+            }
+
+            // If all checks pass, return true
+            return true;
         }
         public static void LockAccount(string userEmail)
         {
@@ -93,28 +162,6 @@ namespace Chas_Ching.Core.Models
             {
                 Console.WriteLine("User not found.");
             }
-        }
-        // Ska metoden för att öppna konto ligga här eller i Customer-klassen?
-        public static void OpenAccount(User user)
-        {
-
-            // If (user == nul)
-            // print "User not found" and return
-
-            // promt user to choose a currency type
-            // If (invalid currency type)
-            // print "Invalid currency type" and return
-
-            // prompt user to enter an initial deposit amount
-            // if (invalid amount)
-            // print "Invalid amount" and return
-
-            // create a new account object with
-            // the selected currency type
-            // initial deposit amount
-            // unique account number (with random numbers?)
-
-            // Print "Account created with ID [AccountId] and balance [Balance] [Currency]"
         }
     }
 }
