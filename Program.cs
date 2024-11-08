@@ -12,10 +12,10 @@ namespace Chas_Ching
 
             //Customer customer = new Customer(email, password);
             //customer.OpenAccount(); 
+            // Create accounts
 
+            // Create accounts with different currencies
         }
-    
-    
     }
 }
 

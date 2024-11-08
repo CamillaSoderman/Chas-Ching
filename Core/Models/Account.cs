@@ -57,18 +57,16 @@ namespace Chas_Ching.Core.Models
         }
         
         // Method to transfer money from one account to another
-        public void Transfer(decimal amount)
+        public void Transfer(decimal amount, Account toAccount, TransactionScheduler schedular)
         {
-            if (amount > Balance)
+            if (amount <= 0)
             {
-                Console.WriteLine("Insufficient funds");
+                Console.WriteLine("Invalid transfer amount");
+                return;
             }
-            else
-            {
-                Balance -= amount;
-                Console.WriteLine($"Transfer successful. New balance: {Balance}");
-            }
-            
+
+            Transaction transaction = new Transaction(amount, this, toAccount);
+            schedular.EnqueueTransaction(transaction);
         }
     }
 }
