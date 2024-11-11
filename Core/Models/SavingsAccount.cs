@@ -1,7 +1,4 @@
 using Chas_Ching.Core.Enums;
-using Chas_Ching.Core.Interfaces;
-
-
 
 // Purpose: Model for Savings Account. Inherits from Account class. Contains Interest Rate property and Deposit method.
 namespace Chas_Ching.Core.Models;

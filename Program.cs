@@ -1,17 +1,11 @@
-﻿using Chas_Ching.Core.Enums;
-using Chas_Ching.Core.Models;
-
-namespace Chas_Ching
+﻿namespace Chas_Ching
 {
-    internal class Program
+    public class Program
     {
-        static void Main(string[] args)
+        public static void Main()
         {
-            //string email = Console.ReadLine();
-            //string password = Console.ReadLine();
-
-            //Customer customer = new Customer(email, password);
-            //customer.OpenAccount(); 
+            var mainMenu = new MainMenu();
+            mainMenu.Start();
         }
     }
 }

@@ -1,9 +1,4 @@
 ﻿using Chas_Ching.Core.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Chas_Ching.Core.Models
 {
@@ -17,6 +12,7 @@ namespace Chas_Ching.Core.Models
             // Initiera Accounts-listan
             CurrentExchangeRates = new Dictionary<CurrencyType, decimal>();
         }
+
         public void CreateUser()
         {
             throw new NotImplementedException();
