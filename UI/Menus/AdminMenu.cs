@@ -1,4 +1,5 @@
-﻿using Chas_Ching.UI.Settings;
+﻿using Chas_Ching.Core.Models;
+using Chas_Ching.UI.Settings;
 using Chas_ChingDemo.UI.Display;
 using Spectre.Console;
 
@@ -7,6 +8,10 @@ using Spectre.Console;
 /// </summary>
 public class AdminMenu
 {
+    public AdminMenu(Admin admin)
+    {
+    }
+
     public void Start()
     {
         while (true)
