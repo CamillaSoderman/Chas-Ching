@@ -1,6 +1,10 @@
 ﻿using Spectre.Console;
 
-namespace Chas_Ching.UI.Display
+/// <summary>
+/// Contains ASCII art for visual feedback in the application
+/// </summary>
+
+namespace Chas_ChingDemo.UI.Display
 {
     public static class AsciiArt
     {
@@ -32,6 +36,7 @@ namespace Chas_Ching.UI.Display
       |  |                    |  |
       (__)--------------------(__)
     """;
+
         public static void PrintBankLogo()
         {
             AnsiConsole.MarkupLine($"[green]{BankLogo}[/]");

@@ -1,14 +1,9 @@
-﻿using Chas_Ching.UI.Display;
-using Chas_Ching.UI.Settings;
+﻿using Chas_Ching.UI.Settings;
+using Chas_ChingDemo.UI.Display;
 using Spectre.Console;
 
-
 /// <summary>
-/// The 'choice' variable stores the user's selected option from the admin menu.
-/// It is of type 'MenuChoice', which is an enumeration (enum) that defines all the possible menu options.
-/// When the user makes a selection from the menu, the corresponding enum value is assigned to 'choice'.
-/// The 'switch' statement checks the value of 'choice' to determine which action to take,
-/// allowing the program to execute the appropriate method for the chosen option. fdc
+/// Handles administrative functions of the banking application
 /// </summary>
 public class AdminMenu
 {
@@ -16,20 +11,23 @@ public class AdminMenu
     {
         while (true)
         {
-            var choice = DisplayService.ShowMenu("Adminmeny", MenuText.GetAdminMenuChoices());
+            var choice = DisplayService.ShowMenu("Admin Menu", MenuText.GetAdminMenuChoices());
 
             switch (choice)
             {
                 case MenuChoice.ShowAllAccounts:
                     ShowAllAccounts();
                     break;
+
                 case MenuChoice.LockUser:
                     HandleLockUser();
                     break;
+
                 case MenuChoice.UnlockUser:
                     HandleUnlockUser();
                     break;
-                case MenuChoice.BackToMain:
+
+                case MenuChoice.BackToMainAdmin:
                     return;
             }
         }
@@ -38,73 +36,56 @@ public class AdminMenu
     private void ShowAllAccounts()
     {
         Console.Clear();
-        DisplayService.ShowHeader("Alla Konton"); // Display header for account overview
+        DisplayService.ShowHeader("All Accounts");
+
         var table = new Table()
-            .AddColumn(new TableColumn("Kontonummer").Centered()) // Add a column for the account number
-            .AddColumn(new TableColumn("Ägare")) // Add a column for the account owner's name
-            .AddColumn(new TableColumn("Status").Centered()); // Add a column for the account status
+            .AddColumn(new TableColumn("Account Number").Centered())
+            .AddColumn(new TableColumn("Owner"))
+            .AddColumn(new TableColumn("Status").Centered());
 
-        // Hardcoded example data for demonstration purposes
         table.BorderColor(Color.Blue);
-        table.AddRow("12345", "Anna Andersson", "[green]Aktiv[/]");
-        table.AddRow("67890", "Bengt Bengtsson", "[green]Aktiv[/]");
 
-        AnsiConsole.Write(table); // Display the table in the console
-        UIHelper.ShowContinuePrompt(); // Call the UIHelper method to prompt the user to continue
+        // Demo data for display purposes
+        table.AddRow("12345", "Anna Andersson", "[green]Active[/]");
+        table.AddRow("67890", "Bengt Bengtsson", "[green]Active[/]");
+
+        AnsiConsole.Write(table);
+        UIHelper.ShowContinuePrompt();
     }
 
     private void HandleLockUser()
     {
-        var userId = DisplayService.AskForInput("Ange användar-ID");
-        bool isSuccess = true;
-
-        AnsiConsole.Status()
-            .Spinner(Spinner.Known.Dots)
-            .Start("Låser konto...", ctx =>
-            {
-                Thread.Sleep(1000);
-            });
-
-        Console.Clear();
-
-        if (isSuccess)
-        {
-            DisplayService.ShowMessage("Konto låst!", "green", showContinuePrompt: false);
-            AsciiArt.PrintSuccessLogo();
-        }
-        else
-        {
-            DisplayService.ShowMessage("Konto låsning misslyckades!", "red", showContinuePrompt: false);
-            AsciiArt.PrintErrorLogo();
-        }
-        UIHelper.ShowContinuePrompt();
+        HandleUserLockStatus("Lock", "Locking account...");
     }
 
     private void HandleUnlockUser()
     {
-        var userId = DisplayService.AskForInput("Ange användar-ID");
-        bool isSuccess = true;
+        HandleUserLockStatus("Unlock", "Unlocking account...");
+    }
+
+    private void HandleUserLockStatus(string action, string progressMessage)
+    {
+        var userId = DisplayService.AskForInput("Enter user ID");
+        bool isSuccess = true; // For demo purposes
 
         AnsiConsole.Status()
             .Spinner(Spinner.Known.Dots)
-            .Start("Låser upp konto...", ctx =>
+            .Start(progressMessage, ctx =>
             {
                 Thread.Sleep(1000);
             });
 
         Console.Clear();
-
         if (isSuccess)
         {
-            DisplayService.ShowMessage("Konto upplåst!", "green", showContinuePrompt: false);
+            DisplayService.ShowMessage($"Account {action.ToLower()}ed!", "green", showContinuePrompt: false);
             AsciiArt.PrintSuccessLogo();
         }
         else
         {
-            DisplayService.ShowMessage("Konto upplåsning misslyckades!", "red", showContinuePrompt: false);
+            DisplayService.ShowMessage($"Account {action.ToLower()}ing failed!", "red", showContinuePrompt: false);
             AsciiArt.PrintErrorLogo();
         }
-
         UIHelper.ShowContinuePrompt();
     }
 }
