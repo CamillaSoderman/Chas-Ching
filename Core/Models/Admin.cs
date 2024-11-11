@@ -7,16 +7,25 @@ namespace Chas_Ching.Core.Models
         // Deklarera Accounts som en lista från klassen Account
         public Dictionary<CurrencyType, decimal> CurrentExchangeRates { get; set; }
 
-        public Admin(string userName, string password) : base(userName, password)
+        public Admin(string userEmail, string password) : base(userEmail, password)
         {
             // Initiera Accounts-listan
             CurrentExchangeRates = new Dictionary<CurrencyType, decimal>();
         }
 
-        public void CreateUser()
+        //Create new customer as Admin
+        public void CreateUserCustomer()
         {
-            throw new NotImplementedException();
+
+            if (UserManagement.FindUser(UserEmail) == null)
+            {
+                Customer customer = new Customer(UserEmail, Password);
+                UserManagement.registeredUsers.Add(customer);   // Add customer in list found in UserManagement
+                customer.OpenAccount();
+            }
+
         }
+
 
         public void UpdateExchangeRates()
         {
