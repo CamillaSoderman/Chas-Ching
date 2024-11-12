@@ -144,20 +144,45 @@ namespace Chas_Ching.Core.Models
             AnsiConsole.MarkupLine("[green] Sparkonto skapat! [/]");
             AnsiConsole.MarkupLine($"[yellow]ID:[/][blue] {accountId} [/]");
             AnsiConsole.MarkupLine($"[yellow]Saldo:[/][blue] {initialBalance} {selectedCurrency} [/]");
-            AnsiConsole.MarkupLine($"[yellow]Ränta:[/][blue] {interestRate}‰ [/]");
+            AnsiConsole.MarkupLine($"[yellow]Årlig Ränta:[/][blue] {interestRate}‰ [/]");
             UIHelper.ShowContinuePrompt();
         }
 
+        // Method to deposit money into an account
         public void DepositToAccount()
         {
+            // Choose account to deposit money to
             var selectAccount = AnsiConsole.Prompt(
                 new SelectionPrompt<string>()
                     .Title("[blue]Välj konto att sätta in pengar på:[/]")
                     .PageSize(10)
                     .AddChoices(Accounts.Select(a => $"Konto {a.AccountId}")));
             
-            Console.WriteLine("Välj summa att sätta in:");
-
+            // Find the selected account in the Accounts list
+            Account selectedAccount = Accounts.Find(a => $"Konto {a.AccountId}" == selectAccount);
+            
+            // Prompt user to select a deposit amount from a list of predefined values
+            var depositAmount = AnsiConsole.Prompt(
+                new SelectionPrompt<decimal>()
+                    .Title("[blue]Ange belopp att sätta in:[/]")
+                    .PageSize(10)
+                    .AddChoices(100, 200, 500, 1000));
+            
+            // Start a status spinner to simulate the deposit process
+            AnsiConsole.Status()
+                .Spinner(Spinner.Known.Dots)
+                .Start($"Sätter in {depositAmount}...", ctx =>
+                {
+                    Thread.Sleep(2000);
+                });
+            
+            // Deposit the amount into the selected account
+            selectedAccount.Deposit(depositAmount);
+            
+            Console.Clear();
+            AsciiArt.PrintSuccessLogo();
+            AnsiConsole.MarkupLine($"[green] {depositAmount} {selectedAccount.Currency} insatt på konto {selectedAccount.AccountId} [/]");
+            UIHelper.ShowContinuePrompt();
         }
         
         public int GenerateUserId()
