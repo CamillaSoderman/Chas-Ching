@@ -1,11 +1,12 @@
-﻿using System.Text.RegularExpressions;
+﻿using Chas_Ching.UI.Settings;
+using Chas_ChingDemo.UI.Display;
+using System.Text.RegularExpressions;
 
 namespace Chas_Ching.Core.Models
 {
     public class UserManagement
     {   // List of registered users
         public static readonly List<User> registeredUsers = new List<User>();
-
 
         public static User? FindUser(string userName)
         {   // Find a user by username. StringComparison.OrdinalIgnoreCase ignores case and returns the first match. Returns null if not found.
@@ -17,20 +18,21 @@ namespace Chas_Ching.Core.Models
             var user = FindUser(userName); // Sets user to the user object if found, otherwise null
             if (user == null)
             {
-                Console.WriteLine("User not found.");
+                Console.WriteLine("Använder finns inte");
                 return false;
             }
 
             if (user.IsUserLocked())
             {
-                Console.WriteLine("User is locked out due to 3 failed login attempts.");
+                Console.WriteLine("Användern är låste pga. 3 misslyckade inloggningsförsök");
                 return false;
             }
 
             // Validate userPassword and handle attempts
             if (user.UserPassword != userPassword)
             {
-                Console.WriteLine("Invalid userPassword.");
+
+                Console.WriteLine("Ogiltig lösenord");
                 user.IncrementLoginAttempts(); // Increment login attempts
                 return false;
             }
@@ -43,9 +45,9 @@ namespace Chas_Ching.Core.Models
             var (isEmailValid, emailErrorMessage) = isValidEmail(userName);
             var (isPasswordValid, passwordErrorMessage) = UserManagement.isPasswordValid(userPassword);
 
-            if (!isEmailValid)
+            if (!isUserNameValid)
             {
-                DisplayService.ShowMessage(emailErrorMessage, "red", showContinuePrompt: false);
+                DisplayService.ShowMessage(userNameErrorMessage, "red", showContinuePrompt: false);
                 return;
             }
 
@@ -67,25 +69,28 @@ namespace Chas_Ching.Core.Models
             DisplayService.ShowMessage($"Användaren {userName} registrerades.", "green", showContinuePrompt: false);
         }
 
-        public static (bool isValid, string errorMessage) isValidEmail(string email)
-        {   // Method takes an email string as input and returns true if the email is valid otherwise false.
-            if (string.IsNullOrWhiteSpace(email))
+        public static (bool isValid, string errorMessage) isUserNameValid(string userName)
+        {   // Method takes an userName string as input and returns true if the userName is valid otherwise false.
+            if (string.IsNullOrWhiteSpace(userName))
             {
-                return (false, "E-postadressen får inte vara tom.");
+                DisplayService.ShowMessage($"Användarnamn får inte vara tomt", "red", showContinuePrompt: false);
+                return (false, string.Empty);
             }
-
-            // Basic regex to validate the email format
-            string pattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
-            Regex regex = new Regex(pattern);
-
-            // Check if email matches the pattern
-            if (regex.IsMatch(email))
+            // Check if userName matches the pattern
+            else if (userName.Length < 5)
             {
-                return (true, string.Empty); // Valid email, no error message
+                DisplayService.ShowMessage($"Användarnamn måste vara minst 5 tecken lång", "red", showContinuePrompt: false);
+                return (false, string.Empty);
+            }
+            // Check if user already exists. If exists, display error message and return to main menu without calling CreateAccountWithAnimation
+            else if (UserManagement.FindUser(userName) != null)
+            {
+                DisplayService.ShowMessage($"Användare {userName} är upptaget", "red", showContinuePrompt: false);
+                return (false, string.Empty);
             }
             else
             {
-                return (false, "Felaktig e-postadress! E-postadressen måste innehålla @ och en domän (exempel@domain.com)");
+                return (true, string.Empty);
             }
         }
 
@@ -145,7 +150,7 @@ namespace Chas_Ching.Core.Models
         }
         public static void Logout(User user)
         {   // Logout metoden behöver färdigställas. Ska programmet avslutas när en användare loggar ut?
-            Console.WriteLine($"Thank you for using Chas-Ching bank {user.UserEmail}!");
+            Console.WriteLine($"Thank you for using Chas-Ching bank {user.userName}!");
         }
          */
     }

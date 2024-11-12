@@ -13,6 +13,7 @@ namespace Chas_Ching.Core.Models
         public decimal Loan { get; set; }
         public TransactionScheduler TransactionScheduler { get; private set; }
 
+
         public Customer(string userName, string UserPassword) : base(userName, UserPassword)
         {
             Accounts = new List<Account>();

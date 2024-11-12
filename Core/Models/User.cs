@@ -2,6 +2,7 @@
 {
     public abstract class User
     {   // Access Modifiers. Only code in the same class or in a derived class can access protected internal members.
+
         protected internal string UserName { get; set; }
         protected internal string UserPassword { get; set; }
         protected internal bool IsLocked { get; set; } = false;
