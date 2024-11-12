@@ -12,6 +12,13 @@ public class SavingsAccount : Account
     {
         
     }
+    
+    // Placeholder for future implementation (Mao)
+    public virtual void GetInterest(decimal amount)
+    {
+        decimal interest = CalculateInterest(amount);
+        Deposit(interest);
+    }
 
     // Method to calculate interest on a deposit into a savings account
     public decimal CalculateInterest(decimal amount)
