@@ -262,15 +262,16 @@ public class CustomerMenu
     private void HandleMakeDeposit()
     {
         Console.Clear();
-        DisplayService.ShowHeader("Insättning/Uttag");
+        DisplayService.ShowHeader("Insättning");
+        ShowAccountDetails(false);
         var choice = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
-                .Title("[blue]Välj en av två alternativ:[/]")
-                .AddChoices(new[] { "Insättning", "Tillbaka" }));
+                .Title("[blue]Välj alternativ:[/]")
+                .AddChoices(new[] { "Välj Konto", "Tillbaka" }));
         
         switch (choice)
         {
-            case "Insättning":
+            case "Välj Konto":
                 _currentCustomer.DepositToAccount();
                 break;
             case "Tillbaka":
