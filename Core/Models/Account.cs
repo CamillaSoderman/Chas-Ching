@@ -25,15 +25,7 @@ namespace Chas_Ching.Core.Models
         
         public void Deposit(decimal amount)
         {   // Method to deposit money into an account
-            if (amount <= 0)
-            {
-                Console.WriteLine("Invalid amount");
-            }
-            else
-            {
-                Balance += amount;
-                Console.WriteLine($"Deposit successful. New balance: {Balance}");
-            }
+            Balance += amount;
         }
 
         public void Withdraw(decimal amount)
