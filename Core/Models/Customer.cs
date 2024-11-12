@@ -118,6 +118,74 @@ namespace Chas_Ching.Core.Models
             UIHelper.ShowContinuePrompt();
         }
 
+        // Method to open a new savings account
+        public void OpenSavingsAccount()
+        {
+            CurrencyType selectedCurrency = CurrencyType.SEK; // All savings account are locked to SEK currency
+            AccountType accountType = AccountType.SavingsAccount;
+            decimal initialBalance = 0;
+            decimal interestRate = SavingsAccount.InterestRate;
+            
+            // Generate unique account ID and add the new account to the Accounts list
+            var accountId = GenerateUserId();
+            var savingsAccount = new Account(accountId, initialBalance, selectedCurrency, AccountType.SavingsAccount);
+            Accounts.Add(savingsAccount);
+            
+            Console.Clear();
+            AnsiConsole.Status()
+                .Spinner(Spinner.Known.Dots)
+                .Start($"Skapar nytt sparkonto med id {accountId}...", ctx =>
+                {
+                    Thread.Sleep(2000);
+                });
+            
+            // Confirmation message and continue prompt
+            Console.Clear();
+            AsciiArt.PrintSuccessLogo();
+            AnsiConsole.MarkupLine("[green] Sparkonto skapat! [/]");
+            AnsiConsole.MarkupLine($"[yellow]ID:[/][blue] {accountId} [/]");
+            AnsiConsole.MarkupLine($"[yellow]Saldo:[/][blue] {initialBalance} {selectedCurrency} [/]");
+            AnsiConsole.MarkupLine($"[yellow]Årlig Ränta:[/][blue] {interestRate}‰ [/]");
+            UIHelper.ShowContinuePrompt();
+        }
+
+        // Method to deposit money into an account
+        public void DepositToAccount()
+        {
+            // Choose account to deposit money to
+            var selectAccount = AnsiConsole.Prompt(
+                new SelectionPrompt<string>()
+                    .Title("[blue]Välj konto att sätta in pengar på:[/]")
+                    .PageSize(10)
+                    .AddChoices(Accounts.Select(a => $"Konto {a.AccountId}")));
+            
+            // Find the selected account in the Accounts list
+            Account selectedAccount = Accounts.Find(a => $"Konto {a.AccountId}" == selectAccount);
+            
+            // Prompt user to select a deposit amount from a list of predefined values
+            var depositAmount = AnsiConsole.Prompt(
+                new SelectionPrompt<decimal>()
+                    .Title("[blue]Ange belopp att sätta in:[/]")
+                    .PageSize(10)
+                    .AddChoices(100, 200, 500, 1000));
+            
+            // Start a status spinner to simulate the deposit process
+            AnsiConsole.Status()
+                .Spinner(Spinner.Known.Dots)
+                .Start($"Sätter in {depositAmount}...", ctx =>
+                {
+                    Thread.Sleep(2000);
+                });
+            
+            // Deposit the amount into the selected account
+            selectedAccount.Deposit(depositAmount);
+            
+            Console.Clear();
+            AsciiArt.PrintSuccessLogo();
+            AnsiConsole.MarkupLine($"[green] {depositAmount} {selectedAccount.Currency} insatt på konto {selectedAccount.AccountId} [/]");
+            UIHelper.ShowContinuePrompt();
+        }
+        
         public int GenerateUserId()
         {   // Method to generate a unique user ID
             int userId = 0;
@@ -147,19 +215,26 @@ namespace Chas_Ching.Core.Models
             }
             Console.WriteLine();
 
-            // 3. Get the transfer amount from the user and validate it
-            var amountInput = DisplayService.AskForInput("Ange belopp att överföra");
-            if (!decimal.TryParse(amountInput, out decimal transferAmount) || transferAmount <= 0)
-            {
-                DisplayService.ShowMessage("Ogiltigt belopp. Ange ett positivt nummer.", "red");
-                return (false, null);
-            }
-
-            // 4. Ask for the source account number and validate it
+            // 3. Ask for the source account number and validate it
             var sourceInput = DisplayService.AskForInput("Ange källkontonummer");
             if (!int.TryParse(sourceInput, out int sourceAccountId))
             {
                 DisplayService.ShowMessage("Ogiltigt kontonummer.", "red");
+                return (false, null);
+            }
+
+            // Prevent user from entering ID for a SavingsAccount
+            if (Accounts.Any(a => a.AccountId == sourceAccountId && a.Type == AccountType.SavingsAccount))
+            {
+                DisplayService.ShowMessage("Du kan inte överföra pengar från ett sparkonto.", "red");
+                return (false, null);
+            }
+            
+            // 4. Get the transfer amount from the user and validate it
+            var amountInput = DisplayService.AskForInput("Ange belopp att överföra");
+            if (!decimal.TryParse(amountInput, out decimal transferAmount) || transferAmount <= 0)
+            {
+                DisplayService.ShowMessage("Ogiltigt belopp. Ange ett positivt nummer.", "red");
                 return (false, null);
             }
 

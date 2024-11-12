@@ -22,6 +22,11 @@ namespace Chas_Ching.Core.Models
         {   // Return the balance minus the pending amount
             return Balance - PendingAmount;
         }
+        
+        public void Deposit(decimal amount)
+        {   // Method to deposit money into an account
+            Balance += amount;
+        }
 
         public void Withdraw(decimal amount)
         {   // Method to withdraw money from an account

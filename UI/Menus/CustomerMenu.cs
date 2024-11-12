@@ -34,6 +34,14 @@ public class CustomerMenu
                 case MenuChoice.OpenNewAccount:
                     HandleOpenNewAccount();
                     break;
+                
+                case MenuChoice.OpenSavingsAccount:
+                    HandleOpenSavingsAccount();
+                    break;
+                
+                case MenuChoice.MakeDeposit:
+                    HandleMakeDeposit();
+                    break;
 
                 case MenuChoice.MakeTransaction:
                     HandleTransactionMenu();
@@ -76,10 +84,21 @@ public class CustomerMenu
         // Loop through all accounts of the current customer and add them to the table
         foreach (var account in _currentCustomer.Accounts)
         {
-            // Check if account is a Loan Account or Bank Account and set the account type
-            string accountType = account.Type == AccountType.LoanAccount ?
-                "[blue]Lånkonto[/]" :
-                "[green]Bankkonto[/]";
+            // Check which type the account is and set the accountType variable accordingly
+            string accountType;
+                
+            if (account.Type == AccountType.SavingsAccount)
+            {
+                accountType = "[yellow]Sparkonto[/]";
+            }
+            else if (account.Type == AccountType.LoanAccount)
+            {
+                accountType = "[blue]Lånkonto[/]";
+            }
+            else
+            {
+                accountType = "[green]Bankkonto[/]";
+            }
 
             // Make PendingAmount in yellow
             string pendingAmountText = account.PendingAmount > 0
@@ -227,7 +246,39 @@ public class CustomerMenu
         // Call the OpenAccount method in Customer class
         _currentCustomer.OpenAccount();
     }
+    
+    private void HandleOpenSavingsAccount()
+    {   // Responsible for handling the savings account creation
+        if (_currentCustomer == null)
+        {
+            DisplayService.ShowMessage("Ingen användare är inloggad", "red");
+            return;
+        }
 
+        // Call the OpenSavingsAccount method in Customer class
+        _currentCustomer.OpenSavingsAccount();
+    }
+
+    private void HandleMakeDeposit()
+    {
+        Console.Clear();
+        DisplayService.ShowHeader("Insättning");
+        ShowAccountDetails(false);
+        var choice = AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+                .Title("[blue]Välj alternativ:[/]")
+                .AddChoices(new[] { "Välj Konto", "Tillbaka" }));
+        
+        switch (choice)
+        {
+            case "Välj Konto":
+                _currentCustomer.DepositToAccount();
+                break;
+            case "Tillbaka":
+                return;
+        }
+    }
+    
     private void HandleLoanApplication()
     {   // Responsible for handling the loan application
         if (_currentCustomer == null)
