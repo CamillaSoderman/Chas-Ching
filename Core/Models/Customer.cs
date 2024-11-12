@@ -109,11 +109,10 @@ namespace Chas_Ching.Core.Models
             CurrencyType selectedCurrency = CurrencyType.SEK; // All savings account are locked to SEK currency
             AccountType accountType = AccountType.SavingsAccount;
             decimal initialBalance = 0;
-            decimal interestRate = SavingsAccount.InterestRate;
             
             // Generate unique account ID and add the new account to the Accounts list
             var accountId = GenerateUserId();
-            var savingsAccount = new Account(accountId, initialBalance, selectedCurrency, AccountType.SavingsAccount);
+            var savingsAccount = new SavingsAccount(accountId, initialBalance, selectedCurrency);
             Accounts.Add(savingsAccount);
             
             Console.Clear();
@@ -130,7 +129,7 @@ namespace Chas_Ching.Core.Models
             AnsiConsole.MarkupLine("[green]Sparkonto skapat! [/]");
             AnsiConsole.MarkupLine($"[yellow]ID:[/][blue] {accountId} [/]");
             AnsiConsole.MarkupLine($"[yellow]Saldo:[/][blue] {initialBalance} {selectedCurrency} [/]");
-            AnsiConsole.MarkupLine($"[yellow]Årlig Ränta:[/][blue] {interestRate}‰ [/]");
+            AnsiConsole.MarkupLine($"[yellow]Årlig Ränta:[/][blue] {savingsAccount.InterestRate}‰ [/]");
             UIHelper.ShowContinuePrompt();
         }
 

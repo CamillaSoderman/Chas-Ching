@@ -113,7 +113,7 @@ public class CustomerMenu
             account.PendingAmount.ToString("F2"),
             account.GetBalance().ToString("F2"),
             account.Currency.ToString(),
-            SavingsAccount.InterestRate.ToString("F2"),
+            account.InterestRate.ToString("F2"),
             accountType);
         }
 
