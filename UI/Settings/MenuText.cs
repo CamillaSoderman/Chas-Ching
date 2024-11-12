@@ -18,6 +18,7 @@
 
         OpenNewAccount,
         OpenSavingsAccount,
+        DepositAndWithdraw,
         MakeTransaction,
         ApplyForLoan,
         ExchangeCurrency,
@@ -50,6 +51,7 @@
             { MenuChoice.ShowAccount, "Visa Konto" },
             { MenuChoice.OpenNewAccount, "Öppna nytt konto" },
             { MenuChoice.OpenSavingsAccount, "Öppna Sparkonto" },
+            { MenuChoice.DepositAndWithdraw, "Insättning/Uttag" },
             { MenuChoice.MakeTransaction, "Transaktioner" },
             { MenuChoice.ApplyForLoan, "Ansök om Lån" },
             { MenuChoice.ExchangeCurrency, "Valutaväxling" },
@@ -79,14 +81,15 @@
 
         public static MenuChoice[] GetCustomerMenuChoices()
         {   // Returns an array of customer menu options as MenuChoice items.
-            MenuChoice[] choices = new MenuChoice[7]; // Specify the size of the array
+            MenuChoice[] choices = new MenuChoice[8]; // Specify the size of the array
             choices[0] = MenuChoice.ShowAccount;
             choices[1] = MenuChoice.OpenNewAccount;
             choices[2] = MenuChoice.OpenSavingsAccount;
-            choices[3] = MenuChoice.MakeTransaction;
-            choices[4] = MenuChoice.ApplyForLoan;
-            choices[5] = MenuChoice.ExchangeCurrency;
-            choices[6] = MenuChoice.BackToMainCustomer;
+            choices[3] = MenuChoice.DepositAndWithdraw;
+            choices[4] = MenuChoice.MakeTransaction;
+            choices[5] = MenuChoice.ApplyForLoan;
+            choices[6] = MenuChoice.ExchangeCurrency;
+            choices[7] = MenuChoice.BackToMainCustomer;
             return choices;
         }
 
