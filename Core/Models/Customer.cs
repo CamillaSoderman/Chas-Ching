@@ -75,32 +75,6 @@ namespace Chas_Ching.Core.Models
                     break;
             }
 
-            Console.Clear();
-
-            // Ask for initial balance or give the user the option to go back with character 'Q'
-            while (!validAmount)
-            {
-                var amountInput = DisplayService.AskForInput($"Ange initialt saldo i {selectedCurrency} (eller 'Q' för att gå tillbaka)");
-
-                if (amountInput.Equals("Q", StringComparison.OrdinalIgnoreCase))
-                {
-                    return;
-                }
-
-                if (decimal.TryParse(amountInput, out initialBalance) && initialBalance >= 0)
-                {
-                    validAmount = true;
-                }
-                else
-                {
-                    DisplayService.ShowMessage("Ogiltigt belopp. Ange ett positivt nummer.", "red");
-                }
-            }
-
-            Console.Clear();
-            Console.WriteLine("Skapar nytt konto...");
-            Thread.Sleep(1000);
-
             // Generate a unique account ID using the existing GenerateUserId() method
             int newAccountId;
             do
@@ -111,10 +85,21 @@ namespace Chas_Ching.Core.Models
             // Create a new account and add it to the Accounts list
             var newAccount = new Account(newAccountId, initialBalance, selectedCurrency);
             Accounts.Add(newAccount);
-
+            
             Console.Clear();
-            DisplayService.ShowMessage($"Konto skapat med ID {newAccountId} och saldo {initialBalance} {selectedCurrency}", "green", showContinuePrompt: false);
+            AnsiConsole.Status()
+                .Spinner(Spinner.Known.Dots)
+                .Start($"Skapar nytt bankkonto med id {newAccountId}...", ctx =>
+                {
+                    Thread.Sleep(2000);
+                });
+
+            // Confirmation message and continue prompt
+            Console.Clear();
             AsciiArt.PrintSuccessLogo();
+            AnsiConsole.MarkupLine("[green]Bankkonto skapat! [/]");
+            AnsiConsole.MarkupLine($"[yellow]ID:[/][blue] {newAccountId} [/]");
+            AnsiConsole.MarkupLine($"[yellow]Saldo:[/][blue] {initialBalance} {selectedCurrency} [/]");
             UIHelper.ShowContinuePrompt();
         }
 
@@ -142,7 +127,7 @@ namespace Chas_Ching.Core.Models
             // Confirmation message and continue prompt
             Console.Clear();
             AsciiArt.PrintSuccessLogo();
-            AnsiConsole.MarkupLine("[green] Sparkonto skapat! [/]");
+            AnsiConsole.MarkupLine("[green]Sparkonto skapat! [/]");
             AnsiConsole.MarkupLine($"[yellow]ID:[/][blue] {accountId} [/]");
             AnsiConsole.MarkupLine($"[yellow]Saldo:[/][blue] {initialBalance} {selectedCurrency} [/]");
             AnsiConsole.MarkupLine($"[yellow]Årlig Ränta:[/][blue] {interestRate}‰ [/]");
