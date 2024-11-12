@@ -20,8 +20,8 @@ public class MainMenu
                     break;
 
                 case MenuChoice.AdminLogin:
-                    var adminMenu = new AdminMenu();
-                    adminMenu.Start();
+                    //var adminMenu = new AdminMenu();
+                    //adminMenu.Start();
                     break;
 
                 case MenuChoice.CreateNewAccount:
@@ -79,7 +79,6 @@ public class MainMenu
 
             if (!isValid)
             {
-                DisplayService.ShowMessage("Felaktig användarnamn! Användarnamnet måste vara minst 5 tecken lång!", "red", showContinuePrompt: false);
                 AsciiArt.PrintErrorLogo();
                 UIHelper.ShowContinuePrompt();
             }
@@ -105,13 +104,6 @@ public class MainMenu
                 AsciiArt.PrintErrorLogo();
             }
         } while (!UserManagement.isPasswordValid(userPassword).isValid);
-
-        // Check if user already exists. If exists, display error message and return to main menu without calling CreateAccountWithAnimation
-        if (UserManagement.FindUser(userName) != null)
-        {
-            DisplayService.ShowMessage($"En användare med användarnamn {userName} är redan registrerad.", "yellow", showContinuePrompt: false);
-            return;
-        }
 
         // Add a delay and loading animation to simulate account creation process to a database
         CreateAccountWithAnimation(userName, userPassword);

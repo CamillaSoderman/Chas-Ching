@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿using Chas_Ching.UI.Settings;
+using Chas_ChingDemo.UI.Display;
+using System.Text.RegularExpressions;
 
 namespace Chas_Ching.Core.Models
 {
@@ -70,12 +72,20 @@ namespace Chas_Ching.Core.Models
         {   // Method takes an userName string as input and returns true if the userName is valid otherwise false.
             if (string.IsNullOrWhiteSpace(userName))
             {
-                return (false, "Användarnamn får inte vara tom.");
+                DisplayService.ShowMessage($"Användarnamn får inte vara tomt", "red", showContinuePrompt: false);
+                return (false, string.Empty);
             }
             // Check if userName matches the pattern
-            else if (userName.Length <= 5)
+            else if (userName.Length < 5)
             {
-                return (false, "Användarnamn måste vara minst 5 tecken lång"); 
+                DisplayService.ShowMessage($"Användarnamn måste vara minst 5 tecken lång", "red", showContinuePrompt: false);
+                return (false, string.Empty);
+            }
+            // Check if user already exists. If exists, display error message and return to main menu without calling CreateAccountWithAnimation
+            else if (UserManagement.FindUser(userName) != null)
+            {
+                DisplayService.ShowMessage($"Användare {userName} är upptaget", "red", showContinuePrompt: false);
+                return (false, string.Empty);
             }
             else
             {
