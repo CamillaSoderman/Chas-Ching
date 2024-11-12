@@ -37,26 +37,32 @@ public class MainMenu
 
     private void HandleCustomerLogin()
     {   // Resnponsible for handling the customer login. Ask for userName and password, verify user and start customer menu
-        string userName = DisplayService.AskForInput("Skriv in ditt användarnamn: ");
-        string password = DisplayService.AskForInput("Skriv in ditt lösenord:");
-        userName = userName.ToLower(); // Convert userName to lowercase
+        bool isLoggedIn = false;
 
-        var user = UserManagement.FindUser(userName); // Find user by userName
+        // WIP: Implement a loop to keep asking for login until user is logged in
+        
+            string userName = DisplayService.AskForInput("Skriv in ditt användarnamn: ");
+            string password = DisplayService.AskForInput("Skriv in ditt lösenord:");
+            userName = userName.ToLower(); // Convert userName to lowercase
 
-        if (user != null && UserManagement.VerifyUser(userName, password))
-        {
-            if (user is Customer customer)
+            var user = UserManagement.FindUser(userName); // Find user by userName
+
+            if (user != null && UserManagement.VerifyUser(userName, password))
             {
-                var customerMenu = new CustomerMenu(customer); // Create new instance of CustomerMenu
-                customerMenu.Start();
+                if (user is Customer customer)
+                {
+                    var customerMenu = new CustomerMenu(customer); // Create new instance of CustomerMenu
+                    customerMenu.Start();
+                }
             }
-        }
-        else
-        {   // Display error message if login fails
-            DisplayService.ShowMessage($"Login misslyckades! Kontrollera din {userName} och lösenord.", "red", showContinuePrompt: false);
-            AsciiArt.PrintErrorLogo();
-            UIHelper.ShowContinuePrompt();
-        }
+            else
+            {
+                // Display error message if login fails
+                DisplayService.ShowMessage($"Login misslyckades! Kontrollera din {userName} och lösenord.", "red",
+                    showContinuePrompt: false);
+                AsciiArt.PrintErrorLogo();
+                UIHelper.ShowContinuePrompt();
+            }
     }
 
     private void HandleCreateAccount()
