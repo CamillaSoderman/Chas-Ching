@@ -147,6 +147,16 @@ namespace Chas_Ching.Core.Models
             AnsiConsole.MarkupLine($"[yellow]Ränta:[/][blue] {interestRate}‰ [/]");
             UIHelper.ShowContinuePrompt();
         }
+
+        public void DepositToAccount()
+        {
+            
+        }
+        
+        public void WithdrawFromAccount()
+        {
+            
+        }
         
         public int GenerateUserId()
         {   // Method to generate a unique user ID
