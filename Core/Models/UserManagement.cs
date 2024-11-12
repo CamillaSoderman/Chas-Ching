@@ -42,8 +42,8 @@ namespace Chas_Ching.Core.Models
         public static void RegisterUser(string userName, string userPassword)
         {   // Registers a new user with a unique username and userPassword
             // Validate email and userPassword
-            var (isEmailValid, emailErrorMessage) = isValidEmail(userName);
-            var (isPasswordValid, passwordErrorMessage) = UserManagement.isPasswordValid(userPassword);
+            var (isUserNameValid, userNameErrorMessage) = IsUserNameValid(userName);
+            var (isPasswordValid, passwordErrorMessage) = UserManagement.IsPasswordValid(userPassword);
 
             if (!isUserNameValid)
             {
@@ -69,7 +69,7 @@ namespace Chas_Ching.Core.Models
             DisplayService.ShowMessage($"Användaren {userName} registrerades.", "green", showContinuePrompt: false);
         }
 
-        public static (bool isValid, string errorMessage) isUserNameValid(string userName)
+        public static (bool isValid, string errorMessage) IsUserNameValid(string userName)
         {   // Method takes an userName string as input and returns true if the userName is valid otherwise false.
             if (string.IsNullOrWhiteSpace(userName))
             {
@@ -94,7 +94,7 @@ namespace Chas_Ching.Core.Models
             }
         }
 
-        public static (bool isValid, string errorMessage) isPasswordValid(string userPassword)
+        public static (bool isValid, string errorMessage) IsPasswordValid(string userPassword)
         {   // Check if the userPassword is less than 5 characters
             if (userPassword.Length < 5)
             {
