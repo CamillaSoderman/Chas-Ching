@@ -75,14 +75,14 @@ public class MainMenu
                 return;
             }
 
-            var (isValid, errorMessage) = UserManagement.isUserNameValid(userName);
+            var (isValid, errorMessage) = UserManagement.IsUserNameValid(userName);
 
             if (!isValid)
             {
                 AsciiArt.PrintErrorLogo();
                 UIHelper.ShowContinuePrompt();
             }
-        } while (!UserManagement.isUserNameValid(userName).isValid);
+        } while (!UserManagement.IsUserNameValid(userName).isValid);
 
         userName = userName.ToLower(); // Convert userName to lowercase
 
@@ -96,14 +96,14 @@ public class MainMenu
                 return;
             }
 
-            var (isValid, errorMessage) = UserManagement.isPasswordValid(userPassword);
+            var (isValid, errorMessage) = UserManagement.IsPasswordValid(userPassword);
 
             if (!isValid)
             {
                 DisplayService.ShowMessage(errorMessage, "red", showContinuePrompt: false);
                 AsciiArt.PrintErrorLogo();
             }
-        } while (!UserManagement.isPasswordValid(userPassword).isValid);
+        } while (!UserManagement.IsPasswordValid(userPassword).isValid);
 
         // Add a delay and loading animation to simulate account creation process to a database
         CreateAccountWithAnimation(userName, userPassword);
