@@ -38,6 +38,10 @@ public class CustomerMenu
                 case MenuChoice.OpenSavingsAccount:
                     HandleOpenSavingsAccount();
                     break;
+                
+                case MenuChoice.DepositAndWithdraw:
+                    HandleDepositAndWithdraw();
+                    break;
 
                 case MenuChoice.MakeTransaction:
                     HandleTransactionMenu();
@@ -255,6 +259,28 @@ public class CustomerMenu
         _currentCustomer.OpenSavingsAccount();
     }
 
+    private void HandleDepositAndWithdraw()
+    {
+        Console.Clear();
+        DisplayService.ShowHeader("Insättning/Uttag");
+        var choice = AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+                .Title("[blue]Välj en av två alternativ:[/]")
+                .AddChoices(new[] { "Insättning", "Uttag", "Tillbaka" }));
+        
+        switch (choice)
+        {
+            case "Insättning":
+                _currentCustomer.MakeDeposit();
+                break;
+            case "Uttag":
+                _currentCustomer.MakeWithdraw();
+                break;
+            case "Tillbaka":
+                return;
+        }
+    }
+    
     private void HandleLoanApplication()
     {   // Responsible for handling the loan application
         if (_currentCustomer == null)
