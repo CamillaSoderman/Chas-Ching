@@ -260,7 +260,14 @@ public class CustomerMenu
     }
 
     private void HandleMakeDeposit()
-    {
+    {   // Responsible for handling the deposit
+        
+        if (_currentCustomer.Accounts.Count == 0)
+        {
+            DisplayService.ShowMessage("Du har inga öppna konton hos banken", "yellow");
+            return;
+        }
+        
         Console.Clear();
         DisplayService.ShowHeader("Insättning");
         ShowAccountDetails(false);
@@ -268,7 +275,7 @@ public class CustomerMenu
             new SelectionPrompt<string>()
                 .Title("[blue]Välj alternativ:[/]")
                 .AddChoices(new[] { "Välj Konto", "Tillbaka" }));
-        
+
         switch (choice)
         {
             case "Välj Konto":
@@ -277,6 +284,7 @@ public class CustomerMenu
             case "Tillbaka":
                 return;
         }
+        
     }
     
     private void HandleLoanApplication()
