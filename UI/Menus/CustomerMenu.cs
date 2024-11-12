@@ -39,8 +39,8 @@ public class CustomerMenu
                     HandleOpenSavingsAccount();
                     break;
                 
-                case MenuChoice.DepositAndWithdraw:
-                    HandleDepositAndWithdraw();
+                case MenuChoice.MakeDeposit:
+                    HandleMakeDeposit();
                     break;
 
                 case MenuChoice.MakeTransaction:
@@ -259,22 +259,19 @@ public class CustomerMenu
         _currentCustomer.OpenSavingsAccount();
     }
 
-    private void HandleDepositAndWithdraw()
+    private void HandleMakeDeposit()
     {
         Console.Clear();
         DisplayService.ShowHeader("Insättning/Uttag");
         var choice = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
                 .Title("[blue]Välj en av två alternativ:[/]")
-                .AddChoices(new[] { "Insättning", "Uttag", "Tillbaka" }));
+                .AddChoices(new[] { "Insättning", "Tillbaka" }));
         
         switch (choice)
         {
             case "Insättning":
-                _currentCustomer.MakeDeposit();
-                break;
-            case "Uttag":
-                _currentCustomer.MakeWithdraw();
+                _currentCustomer.DepositToAccount();
                 break;
             case "Tillbaka":
                 return;

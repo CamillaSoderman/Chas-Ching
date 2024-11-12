@@ -18,7 +18,7 @@
 
         OpenNewAccount,
         OpenSavingsAccount,
-        DepositAndWithdraw,
+        MakeDeposit,
         MakeTransaction,
         ApplyForLoan,
         ExchangeCurrency,
@@ -51,7 +51,7 @@
             { MenuChoice.ShowAccount, "Visa Konto" },
             { MenuChoice.OpenNewAccount, "Öppna nytt konto" },
             { MenuChoice.OpenSavingsAccount, "Öppna Sparkonto" },
-            { MenuChoice.DepositAndWithdraw, "Insättning/Uttag" },
+            { MenuChoice.MakeDeposit, "Insättning" },
             { MenuChoice.MakeTransaction, "Transaktioner" },
             { MenuChoice.ApplyForLoan, "Ansök om Lån" },
             { MenuChoice.ExchangeCurrency, "Valutaväxling" },
@@ -85,7 +85,7 @@
             choices[0] = MenuChoice.ShowAccount;
             choices[1] = MenuChoice.OpenNewAccount;
             choices[2] = MenuChoice.OpenSavingsAccount;
-            choices[3] = MenuChoice.DepositAndWithdraw;
+            choices[3] = MenuChoice.MakeDeposit;
             choices[4] = MenuChoice.MakeTransaction;
             choices[5] = MenuChoice.ApplyForLoan;
             choices[6] = MenuChoice.ExchangeCurrency;
