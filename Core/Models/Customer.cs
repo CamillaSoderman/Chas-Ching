@@ -184,6 +184,13 @@ namespace Chas_Ching.Core.Models
                 DisplayService.ShowMessage("Ogiltigt kontonummer.", "red");
                 return (false, null);
             }
+
+            // Prevent user from entering ID for a SavingsAccount
+            if (Accounts.Any(a => a.AccountId == sourceAccountId && a.Type == AccountType.SavingsAccount))
+            {
+                DisplayService.ShowMessage("Du kan inte överföra pengar från ett sparkonto.", "red");
+                return (false, null);
+            }
             
             // 4. Get the transfer amount from the user and validate it
             var amountInput = DisplayService.AskForInput("Ange belopp att överföra");
