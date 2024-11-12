@@ -23,6 +23,7 @@
         BackToMainCustomer,
 
         // Admin Menu
+        CreateNewCustomer,
         ShowAllAccounts,
 
         LockUser,
@@ -54,6 +55,7 @@
             { MenuChoice.BackToMainCustomer, "Återvänd till Huvudmeny" },
 
             // Admin menu
+            { MenuChoice.CreateNewCustomer, "Skapa ny kund" },
             { MenuChoice.ShowAllAccounts, "Lista alla konton" },
             { MenuChoice.LockUser, "Lås användare" },
             { MenuChoice.UnlockUser, "Lås upp användare" },
@@ -89,11 +91,12 @@
 
         public static MenuChoice[] GetAdminMenuChoices()
         {   // Returns an array of admin menu options as MenuChoice items.
-            MenuChoice[] choices = new MenuChoice[4]; // Specify the size of the array
-            choices[0] = MenuChoice.ShowAllAccounts;
-            choices[1] = MenuChoice.LockUser;
-            choices[2] = MenuChoice.UnlockUser;
-            choices[3] = MenuChoice.BackToMainAdmin;
+            MenuChoice[] choices = new MenuChoice[5]; // Specify the size of the array
+            choices[0] = MenuChoice.CreateNewCustomer;
+            choices[1] = MenuChoice.ShowAllAccounts;
+            choices[2] = MenuChoice.LockUser;
+            choices[3] = MenuChoice.UnlockUser;
+            choices[4] = MenuChoice.BackToMainAdmin;
             return choices;
         }
     }

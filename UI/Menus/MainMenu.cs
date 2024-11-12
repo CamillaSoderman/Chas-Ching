@@ -152,8 +152,8 @@ public class MainMenu
         string userEmail = DisplayService.AskForInput("Skriv in din email-address:");
         string password = DisplayService.AskForInput("Skriv in ditt lösenord:");
         
-        string adminUserEmail;
-        string adminPassword;
+        Admin.CreateAdmin();
+
 
 
         var user = UserManagement.FindUser(userEmail); // Find user by email
@@ -164,6 +164,7 @@ public class MainMenu
             {
                 var adminMenu = new AdminMenu(admin); // Create new instance of AdminMenu
                 adminMenu.Start();
+                
             }
         }
         else
