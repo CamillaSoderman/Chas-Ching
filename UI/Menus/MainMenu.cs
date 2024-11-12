@@ -20,8 +20,7 @@ public class MainMenu
                     break;
 
                 case MenuChoice.AdminLogin:
-                    //var adminMenu = new AdminMenu();
-                    //adminMenu.Start();
+                    HandleAdminLogin();
                     break;
 
                 case MenuChoice.CreateNewAccount:
