@@ -20,7 +20,8 @@ public class MainMenu
                     break;
 
                 case MenuChoice.AdminLogin:
-                    HandleAdminLogin();
+                    var adminMenu = new AdminMenu();
+                    adminMenu.Start();
                     break;
 
                 case MenuChoice.CreateNewAccount:
@@ -73,7 +74,7 @@ public class MainMenu
                 return;
             }
 
-            var (isValid, errorMessage) = UserManagement.isValidEmail(userEmail);
+            var (isValid, errorMessage) = UserManagement.isUserNameValid(userEmail);
 
             if (!isValid)
             {
@@ -81,7 +82,7 @@ public class MainMenu
                 AsciiArt.PrintErrorLogo();
                 UIHelper.ShowContinuePrompt();
             }
-        } while (!UserManagement.isValidEmail(userEmail).isValid);
+        } while (!UserManagement.isUserNameValid(userEmail).isValid);
 
         // Get and validate password
         do
@@ -145,32 +146,5 @@ public class MainMenu
         }
 
         UIHelper.ShowContinuePrompt();
-    }
-
-    private void HandleAdminLogin()
-    {   // Resnponsible for handling the customer login. Ask for email and password, verify user and start customer menu
-        string userEmail = DisplayService.AskForInput("Skriv in din email-address:");
-        string password = DisplayService.AskForInput("Skriv in ditt lösenord:");
-        
-        string adminUserEmail;
-        string adminPassword;
-
-
-        var user = UserManagement.FindUser(userEmail); // Find user by email
-
-        if (user != null && UserManagement.VerifyUser(userEmail, password))
-        {
-            if (user is Admin admin)
-            {
-                var adminMenu = new AdminMenu(admin); // Create new instance of AdminMenu
-                adminMenu.Start();
-            }
-        }
-        else
-        {   // Display error message if login fails
-            DisplayService.ShowMessage($"Login misslyckades! Kontrollera din {userEmail} och lösenord.", "red", showContinuePrompt: false);
-            AsciiArt.PrintErrorLogo();
-            UIHelper.ShowContinuePrompt();
-        }
     }
 }

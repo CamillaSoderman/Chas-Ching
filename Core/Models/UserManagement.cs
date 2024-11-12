@@ -6,45 +6,45 @@ namespace Chas_Ching.Core.Models
     {   // List of registered users
         public static readonly List<User> registeredUsers = new List<User>();
 
-        public static User? FindUser(string userEmail)
+        public static User? FindUser(string userName)
         {   // Find a user by username. StringComparison.OrdinalIgnoreCase ignores case and returns the first match. Returns null if not found.
-            return registeredUsers.Find(user => user.UserEmail.Equals(userEmail, StringComparison.OrdinalIgnoreCase));
+            return registeredUsers.Find(user => user.userName.Equals(userName, StringComparison.OrdinalIgnoreCase));
         }
 
-        public static bool VerifyUser(string userEmail, string password)
+        public static bool VerifyUser(string userName, string password)
         {   // Method to verify if the user exists and is locked out. Increment login attempts if password is incorrect
-            var user = FindUser(userEmail); // Sets user to the user object if found, otherwise null
+            var user = FindUser(userName); // Sets user to the user object if found, otherwise null
             if (user == null)
             {
-                Console.WriteLine("User not found.");
+                Console.WriteLine("Använder finns inte");
                 return false;
             }
 
             if (user.IsUserLocked())
             {
-                Console.WriteLine("User is locked out due to 3 failed login attempts.");
+                Console.WriteLine("Användern är låste pga. 3 misslyckade inloggningsförsök");
                 return false;
             }
 
             // Validate password and handle attempts
             if (user.Password != password)
             {
-                Console.WriteLine("Invalid password.");
+                Console.WriteLine("Ogiltig lösenord");
                 user.IncrementLoginAttempts(); // Increment login attempts
                 return false;
             }
             return true; // Credentials are valid
         }
 
-        public static void RegisterUser(string userEmail, string password)
+        public static void RegisterUser(string userName, string password)
         {   // Registers a new user with a unique username and password
-            // Validate email and password
-            var (isEmailValid, emailErrorMessage) = isValidEmail(userEmail);
+            // Validate userName and password
+            var (isUserNameValid, userNameErrorMessage) = UserManagement.isUserNameValid(userName);
             var (isPasswordValid, passwordErrorMessage) = UserManagement.isPasswordValid(password);
 
-            if (!isEmailValid)
+            if (!isUserNameValid)
             {
-                DisplayService.ShowMessage(emailErrorMessage, "red", showContinuePrompt: false);
+                DisplayService.ShowMessage(userNameErrorMessage, "red", showContinuePrompt: false);
                 return;
             }
 
@@ -55,36 +55,31 @@ namespace Chas_Ching.Core.Models
             }
 
             // This function just return the user without execute registerUsers.Add. Error message displays in MainMenu
-            if (FindUser(userEmail) != null)
+            if (FindUser(userName) != null)
             {
                 return;
             }
 
             // Create a new user obj based
-            User newUser = new Customer(userEmail, password);
+            User newUser = new Customer(userName, password);
             registeredUsers.Add(newUser);
-            DisplayService.ShowMessage($"Användaren {userEmail} registrerades.", "green", showContinuePrompt: false);
+            DisplayService.ShowMessage($"Användaren {userName} registrerades.", "green", showContinuePrompt: false);
         }
 
-        public static (bool isValid, string errorMessage) isValidEmail(string email)
-        {   // Method takes an email string as input and returns true if the email is valid otherwise false.
-            if (string.IsNullOrWhiteSpace(email))
+        public static (bool isValid, string errorMessage) isUserNameValid(string userName)
+        {   // Method takes an userName string as input and returns true if the userName is valid otherwise false.
+            if (string.IsNullOrWhiteSpace(userName))
             {
-                return (false, "E-postadressen får inte vara tom.");
+                return (false, "Användarnamn får inte vara tom.");
             }
-
-            // Basic regex to validate the email format
-            string pattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
-            Regex regex = new Regex(pattern);
-
-            // Check if email matches the pattern
-            if (regex.IsMatch(email))
+            // Check if userName matches the pattern
+            else if (userName.Length <= 5)
             {
-                return (true, string.Empty); // Valid email, no error message
+                return (false, "Användarnamn måste vara minst 5 tecken lång"); 
             }
             else
             {
-                return (false, "Felaktig e-postadress! E-postadressen måste innehålla @ och en domän (exempel@domain.com)");
+                return (true, string.Empty);
             }
         }
 
@@ -108,13 +103,13 @@ namespace Chas_Ching.Core.Models
         }
 
         /* Metoderna används inte i programmet
-                public static void LockAccount(string userEmail)
+                public static void LockAccount(string userName)
         {
-            var user = FindUser(userEmail);
+            var user = FindUser(userName);
             if (user != null)
             {
                 user.IsLocked = true;
-                Console.WriteLine($"User {userEmail} has been locked out.");
+                Console.WriteLine($"User {userName} has been locked out.");
             }
             else
             {
@@ -122,29 +117,29 @@ namespace Chas_Ching.Core.Models
             }
         }
 
-        public static void UnlockAccount(string userEmail)
+        public static void UnlockAccount(string userName)
         {
-            var user = FindUser(userEmail);
+            var user = FindUser(userName);
             if (user != null)
             {
                 user.IsLocked = false;
-                Console.WriteLine($"User {userEmail} has been unlocked.");
+                Console.WriteLine($"User {userName} has been unlocked.");
             }
             else
             {
                 Console.WriteLine("User not found.");
             }
         }
-        public static void Login(string userEmail, string password)
+        public static void Login(string userName, string password)
         {   // Attempts to log in a user by checking if the provided username exists
-            if (VerifyUser(userEmail, password))
+            if (VerifyUser(userName, password))
             {
-                Console.WriteLine($"Login successful for user: {userEmail}");
+                Console.WriteLine($"Login successful for user: {userName}");
             }
         }
         public static void Logout(User user)
         {   // Logout metoden behöver färdigställas. Ska programmet avslutas när en användare loggar ut?
-            Console.WriteLine($"Thank you for using Chas-Ching bank {user.UserEmail}!");
+            Console.WriteLine($"Thank you for using Chas-Ching bank {user.userName}!");
         }
          */
     }
