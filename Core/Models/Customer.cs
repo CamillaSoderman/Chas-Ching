@@ -123,27 +123,28 @@ namespace Chas_Ching.Core.Models
             CurrencyType selectedCurrency = CurrencyType.SEK; // All savings account are locked to SEK currency
             AccountType accountType = AccountType.SavingsAccount;
             decimal initialBalance = 0;
-            decimal interestRate = 0;
-            
-            Console.Clear();
-            AnsiConsole.Status()
-                .Spinner(Spinner.Known.Dots)
-                .Start("Skapar nytt sparkonto...", ctx =>
-                {
-                    Thread.Sleep(1000);
-                });
+            decimal interestRate = SavingsAccount.InterestRate;
             
             // Generate unique account ID and add the new account to the Accounts list
             var accountId = GenerateUserId();
             var savingsAccount = new Account(accountId, initialBalance, selectedCurrency, AccountType.SavingsAccount);
             Accounts.Add(savingsAccount);
             
+            Console.Clear();
+            AnsiConsole.Status()
+                .Spinner(Spinner.Known.Dots)
+                .Start($"Skapar nytt sparkonto med id {accountId}...", ctx =>
+                {
+                    Thread.Sleep(2000);
+                });
+            
             // Confirmation message and continue prompt
             Console.Clear();
             AsciiArt.PrintSuccessLogo();
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"Sparkonto skapat med ID {accountId}");
-            Console.ResetColor();
+            AnsiConsole.MarkupLine("[green] Sparkonto skapat! [/]");
+            AnsiConsole.MarkupLine($"[yellow]ID:[/][blue] {accountId} [/]");
+            AnsiConsole.MarkupLine($"[yellow]Saldo:[/][blue] {initialBalance} {selectedCurrency} [/]");
+            AnsiConsole.MarkupLine($"[yellow]Ränta:[/][blue] {interestRate}‰ [/]");
             UIHelper.ShowContinuePrompt();
         }
         
@@ -176,19 +177,19 @@ namespace Chas_Ching.Core.Models
             }
             Console.WriteLine();
 
-            // 3. Get the transfer amount from the user and validate it
-            var amountInput = DisplayService.AskForInput("Ange belopp att överföra");
-            if (!decimal.TryParse(amountInput, out decimal transferAmount) || transferAmount <= 0)
-            {
-                DisplayService.ShowMessage("Ogiltigt belopp. Ange ett positivt nummer.", "red");
-                return (false, null);
-            }
-
-            // 4. Ask for the source account number and validate it
+            // 3. Ask for the source account number and validate it
             var sourceInput = DisplayService.AskForInput("Ange källkontonummer");
             if (!int.TryParse(sourceInput, out int sourceAccountId))
             {
                 DisplayService.ShowMessage("Ogiltigt kontonummer.", "red");
+                return (false, null);
+            }
+            
+            // 4. Get the transfer amount from the user and validate it
+            var amountInput = DisplayService.AskForInput("Ange belopp att överföra");
+            if (!decimal.TryParse(amountInput, out decimal transferAmount) || transferAmount <= 0)
+            {
+                DisplayService.ShowMessage("Ogiltigt belopp. Ange ett positivt nummer.", "red");
                 return (false, null);
             }
 
