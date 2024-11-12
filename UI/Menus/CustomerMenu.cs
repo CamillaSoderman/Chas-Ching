@@ -79,6 +79,7 @@ public class CustomerMenu
         .AddColumn(new TableColumn("Reserverat").RightAligned())
         .AddColumn(new TableColumn("Tillgängligt").RightAligned())
         .AddColumn(new TableColumn("Valuta").Centered())
+        .AddColumn(new TableColumn("Ränta").Centered())
         .AddColumn(new TableColumn("Konto Typ").Centered());
 
         // Loop through all accounts of the current customer and add them to the table
@@ -112,6 +113,7 @@ public class CustomerMenu
             account.PendingAmount.ToString("F2"),
             account.GetBalance().ToString("F2"),
             account.Currency.ToString(),
+            SavingsAccount.InterestRate.ToString("F2"),
             accountType);
         }
 
