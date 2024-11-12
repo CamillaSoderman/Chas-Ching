@@ -75,32 +75,6 @@ namespace Chas_Ching.Core.Models
                     break;
             }
 
-            Console.Clear();
-
-            // Ask for initial balance or give the user the option to go back with character 'Q'
-            while (!validAmount)
-            {
-                var amountInput = DisplayService.AskForInput($"Ange initialt saldo i {selectedCurrency} (eller 'Q' för att gå tillbaka)");
-
-                if (amountInput.Equals("Q", StringComparison.OrdinalIgnoreCase))
-                {
-                    return;
-                }
-
-                if (decimal.TryParse(amountInput, out initialBalance) && initialBalance >= 0)
-                {
-                    validAmount = true;
-                }
-                else
-                {
-                    DisplayService.ShowMessage("Ogiltigt belopp. Ange ett positivt nummer.", "red");
-                }
-            }
-
-            Console.Clear();
-            Console.WriteLine("Skapar nytt konto...");
-            Thread.Sleep(1000);
-
             // Generate a unique account ID using the existing GenerateUserId() method
             int newAccountId;
             do
@@ -111,10 +85,21 @@ namespace Chas_Ching.Core.Models
             // Create a new account and add it to the Accounts list
             var newAccount = new Account(newAccountId, initialBalance, selectedCurrency);
             Accounts.Add(newAccount);
-
+            
             Console.Clear();
-            DisplayService.ShowMessage($"Konto skapat med ID {newAccountId} och saldo {initialBalance} {selectedCurrency}", "green", showContinuePrompt: false);
+            AnsiConsole.Status()
+                .Spinner(Spinner.Known.Dots)
+                .Start($"Skapar nytt bankkonto med id {newAccountId}...", ctx =>
+                {
+                    Thread.Sleep(2000);
+                });
+
+            // Confirmation message and continue prompt
+            Console.Clear();
             AsciiArt.PrintSuccessLogo();
+            AnsiConsole.MarkupLine("[green]Bankkonto skapat! [/]");
+            AnsiConsole.MarkupLine($"[yellow]ID:[/][blue] {newAccountId} [/]");
+            AnsiConsole.MarkupLine($"[yellow]Saldo:[/][blue] {initialBalance} {selectedCurrency} [/]");
             UIHelper.ShowContinuePrompt();
         }
 
@@ -124,11 +109,10 @@ namespace Chas_Ching.Core.Models
             CurrencyType selectedCurrency = CurrencyType.SEK; // All savings account are locked to SEK currency
             AccountType accountType = AccountType.SavingsAccount;
             decimal initialBalance = 0;
-            decimal interestRate = SavingsAccount.InterestRate;
             
             // Generate unique account ID and add the new account to the Accounts list
             var accountId = GenerateUserId();
-            var savingsAccount = new Account(accountId, initialBalance, selectedCurrency, AccountType.SavingsAccount);
+            var savingsAccount = new SavingsAccount(accountId, initialBalance, selectedCurrency);
             Accounts.Add(savingsAccount);
             
             Console.Clear();
@@ -142,10 +126,10 @@ namespace Chas_Ching.Core.Models
             // Confirmation message and continue prompt
             Console.Clear();
             AsciiArt.PrintSuccessLogo();
-            AnsiConsole.MarkupLine("[green] Sparkonto skapat! [/]");
+            AnsiConsole.MarkupLine("[green]Sparkonto skapat! [/]");
             AnsiConsole.MarkupLine($"[yellow]ID:[/][blue] {accountId} [/]");
             AnsiConsole.MarkupLine($"[yellow]Saldo:[/][blue] {initialBalance} {selectedCurrency} [/]");
-            AnsiConsole.MarkupLine($"[yellow]Årlig Ränta:[/][blue] {interestRate}‰ [/]");
+            AnsiConsole.MarkupLine($"[yellow]Årlig Ränta:[/][blue] {savingsAccount.InterestRate}‰ [/]");
             UIHelper.ShowContinuePrompt();
         }
 
@@ -205,85 +189,63 @@ namespace Chas_Ching.Core.Models
                 return (false, null);
             }
 
-            Console.Clear();
-            DisplayService.ShowMessage("Tillgängliga konton:", "blue", false);
-
-            // 2. Display all available accounts and their balances
-            foreach (var account in Accounts)
+            // Choose account to transfer money from
+            var selectFromAccount = AnsiConsole.Prompt(
+                new SelectionPrompt<string>()
+                    .Title("[blue]Välj konto att överföra pengar ifrån:[/]")
+                    .PageSize(10)
+                    .AddChoices(Accounts.Select(a => $"Konto {a.AccountId}")));
+            
+            // Find the selected account in the Accounts list
+            Account selectedFromAccount = Accounts.Find(a => $"Konto {a.AccountId}" == selectFromAccount);
+            
+            // Choose account to transfer money to
+            var selectToAccount = AnsiConsole.Prompt(
+                new SelectionPrompt<string>()
+                    .Title("[blue]Välj konto att överföra pengar till:[/]")
+                    .PageSize(10)
+                    .AddChoices(Accounts.Select(a => $"Konto {a.AccountId}")));
+            
+            // Find the selected account in the Accounts list
+            Account selectedToAccount = Accounts.Find(a => $"Konto {a.AccountId}" == selectToAccount);
+            
+            
+            // 8. Ensure the source and destination accounts are different
+            if (selectedFromAccount.AccountId == selectedToAccount.AccountId)
             {
-                Console.WriteLine($"Konto {account.AccountId}: {account.Balance:F2} {account.Currency}");
-            }
-            Console.WriteLine();
-
-            // 3. Ask for the source account number and validate it
-            var sourceInput = DisplayService.AskForInput("Ange källkontonummer");
-            if (!int.TryParse(sourceInput, out int sourceAccountId))
-            {
-                DisplayService.ShowMessage("Ogiltigt kontonummer.", "red");
-                return (false, null);
-            }
-
-            // Prevent user from entering ID for a SavingsAccount
-            if (Accounts.Any(a => a.AccountId == sourceAccountId && a.Type == AccountType.SavingsAccount))
-            {
-                DisplayService.ShowMessage("Du kan inte överföra pengar från ett sparkonto.", "red");
+                DisplayService.ShowMessage("Du kan inte överföra pengar till samma konto.", "red");
                 return (false, null);
             }
             
-            // 4. Get the transfer amount from the user and validate it
-            var amountInput = DisplayService.AskForInput("Ange belopp att överföra");
+            // Ask for the transfer amount
+            var amountInput = DisplayService.AskForInput("[blue]Ange belopp att överföra[/]");
             if (!decimal.TryParse(amountInput, out decimal transferAmount) || transferAmount <= 0)
             {
                 DisplayService.ShowMessage("Ogiltigt belopp. Ange ett positivt nummer.", "red");
                 return (false, null);
             }
-
-            // 5. Ask for the destination account number and validate it
-            var destInput = DisplayService.AskForInput("Ange mottagarkontonummer");
-            if (!int.TryParse(destInput, out int destAccountId))
-            {
-                DisplayService.ShowMessage("Ogiltigt kontonummer.", "red");
-                return (false, null);
-            }
-
-            // 6. Retrieve the source and destination accounts based on the provided account IDs
-            var fromAccount = Accounts.FirstOrDefault(a => a.AccountId == sourceAccountId);
-            var toAccount = Accounts.FirstOrDefault(a => a.AccountId == destAccountId);
-
-            // 7. Check if both accounts exist
-            if (fromAccount == null || toAccount == null)
-            {
-                DisplayService.ShowMessage("Ett eller båda kontona kunde inte hittas.", "red");
-                return (false, null);
-            }
-
-            // 8. Ensure the source and destination accounts are different
-            if (fromAccount.AccountId == toAccount.AccountId)
-            {
-                DisplayService.ShowMessage("Du kan inte överföra pengar till samma konto.", "red");
-                return (false, null);
-            }
-
+            
             // 9. Ensure the source account has enough funds for the transfer
-            if (transferAmount > fromAccount.GetBalance())
+            if (transferAmount > selectedFromAccount.GetBalance())
             {
                 DisplayService.ShowMessage("Otillräckligt tillgängligt saldo.", "red");
                 return (false, null);
             }
 
             // 10. Try to reserve funds for the transfer
-            if (fromAccount.ReserveFunds(transferAmount))
+            if (selectedFromAccount.ReserveFunds(transferAmount))
             {
-                var transaction = new Transaction(transferAmount, fromAccount, toAccount);
+                var transaction = new Transaction(transferAmount, selectedFromAccount, selectedToAccount);
                 TransactionScheduler.EnqueueTransaction(transaction);
                 TransactionScheduler.Start();
 
                 // 11. If accounts have different currencies, handle currency conversion
-                if (fromAccount.Currency != toAccount.Currency)
+                if (selectedFromAccount.Currency != selectedToAccount.Currency)
                 {
                     try
                     {   // Convert the transfer amount to the destination account currency
-                        decimal convertedAmount = CurrencyExchange.Convert(transferAmount, fromAccount.Currency, toAccount.Currency);
+                        decimal convertedAmount = CurrencyExchange.Convert
+                            (transferAmount, selectedFromAccount.Currency, selectedToAccount.Currency);
                     }
                     catch (Exception ex)
                     {

@@ -79,6 +79,7 @@ public class CustomerMenu
         .AddColumn(new TableColumn("Reserverat").RightAligned())
         .AddColumn(new TableColumn("Tillgängligt").RightAligned())
         .AddColumn(new TableColumn("Valuta").Centered())
+        .AddColumn(new TableColumn("Ränta").Centered())
         .AddColumn(new TableColumn("Konto Typ").Centered());
 
         // Loop through all accounts of the current customer and add them to the table
@@ -112,6 +113,7 @@ public class CustomerMenu
             account.PendingAmount.ToString("F2"),
             account.GetBalance().ToString("F2"),
             account.Currency.ToString(),
+            account.InterestRate.ToString("F2"),
             accountType);
         }
 
@@ -260,7 +262,14 @@ public class CustomerMenu
     }
 
     private void HandleMakeDeposit()
-    {
+    {   // Responsible for handling the deposit
+        
+        if (_currentCustomer.Accounts.Count == 0)
+        {
+            DisplayService.ShowMessage("Du har inga öppna konton hos banken", "yellow");
+            return;
+        }
+        
         Console.Clear();
         DisplayService.ShowHeader("Insättning");
         ShowAccountDetails(false);
@@ -268,7 +277,7 @@ public class CustomerMenu
             new SelectionPrompt<string>()
                 .Title("[blue]Välj alternativ:[/]")
                 .AddChoices(new[] { "Välj Konto", "Tillbaka" }));
-        
+
         switch (choice)
         {
             case "Välj Konto":
@@ -277,6 +286,7 @@ public class CustomerMenu
             case "Tillbaka":
                 return;
         }
+        
     }
     
     private void HandleLoanApplication()
