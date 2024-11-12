@@ -142,4 +142,32 @@ public class MainMenu
 
         UIHelper.ShowContinuePrompt();
     }
+
+    private void HandleAdminLogin()
+    {   // Resnponsible for handling the customer login. Ask for email and password, verify user and start customer menu
+        string userEmail = DisplayService.AskForInput("Skriv in din email-address:");
+        string password = DisplayService.AskForInput("Skriv in ditt lösenord:");
+        
+        Admin.CreateAdmin();
+
+
+
+        var user = UserManagement.FindUser(userEmail); // Find user by email
+
+        if (user != null && UserManagement.VerifyUser(userEmail, password))
+        {
+            if (user is Admin admin)
+            {
+                var adminMenu = new AdminMenu(admin); // Create new instance of AdminMenu
+                adminMenu.Start();
+                
+            }
+        }
+        else
+        {   // Display error message if login fails
+            DisplayService.ShowMessage($"Login misslyckades! Kontrollera din {userEmail} och lösenord.", "red", showContinuePrompt: false);
+            AsciiArt.PrintErrorLogo();
+            UIHelper.ShowContinuePrompt();
+        }
+    }
 }

@@ -20,6 +20,10 @@ public class AdminMenu
 
             switch (choice)
             {
+                case MenuChoice.CreateNewCustomer:
+                    CreateNewCustomer(); 
+                    break;
+
                 case MenuChoice.ShowAllAccounts:
                     ShowAllAccounts();
                     break;
@@ -36,6 +40,21 @@ public class AdminMenu
                     return;
             }
         }
+    }
+
+    private void CreateNewCustomer()
+    {
+        Console.Clear();
+        DisplayService.ShowHeader("Create new Customer");
+
+        var userName = DisplayService.AskForInput("Enter user Name");
+        var userPassword = DisplayService.AskForInput("Enter user Password");
+        Admin.CreateUserCustomer(userName, userPassword);
+        //var userPassword = DisplayService.AskForInput("Enter user Password");
+        
+        
+
+
     }
 
     private void ShowAllAccounts()

@@ -10,11 +10,11 @@ namespace Chas_Ching.Core.Models
 
         public static User? FindUser(string userName)
         {   // Find a user by username. StringComparison.OrdinalIgnoreCase ignores case and returns the first match. Returns null if not found.
-            return registeredUsers.Find(user => user.userName.Equals(userName, StringComparison.OrdinalIgnoreCase));
+            return registeredUsers.Find(user => user.UserName.Equals(userName, StringComparison.OrdinalIgnoreCase));
         }
 
-        public static bool VerifyUser(string userName, string password)
-        {   // Method to verify if the user exists and is locked out. Increment login attempts if password is incorrect
+        public static bool VerifyUser(string userName, string userPassword)
+        {   // Method to verify if the user exists and is locked out. Increment login attempts if userPassword is incorrect
             var user = FindUser(userName); // Sets user to the user object if found, otherwise null
             if (user == null)
             {
@@ -28,9 +28,10 @@ namespace Chas_Ching.Core.Models
                 return false;
             }
 
-            // Validate password and handle attempts
-            if (user.Password != password)
+            // Validate userPassword and handle attempts
+            if (user.UserPassword != userPassword)
             {
+
                 Console.WriteLine("Ogiltig lösenord");
                 user.IncrementLoginAttempts(); // Increment login attempts
                 return false;
@@ -38,11 +39,11 @@ namespace Chas_Ching.Core.Models
             return true; // Credentials are valid
         }
 
-        public static void RegisterUser(string userName, string password)
-        {   // Registers a new user with a unique username and password
-            // Validate userName and password
-            var (isUserNameValid, userNameErrorMessage) = UserManagement.isUserNameValid(userName);
-            var (isPasswordValid, passwordErrorMessage) = UserManagement.isPasswordValid(password);
+        public static void RegisterUser(string userName, string userPassword)
+        {   // Registers a new user with a unique username and userPassword
+            // Validate email and userPassword
+            var (isEmailValid, emailErrorMessage) = isValidEmail(userName);
+            var (isPasswordValid, passwordErrorMessage) = UserManagement.isPasswordValid(userPassword);
 
             if (!isUserNameValid)
             {
@@ -63,7 +64,7 @@ namespace Chas_Ching.Core.Models
             }
 
             // Create a new user obj based
-            User newUser = new Customer(userName, password);
+            User newUser = new Customer(userName, userPassword);
             registeredUsers.Add(newUser);
             DisplayService.ShowMessage($"Användaren {userName} registrerades.", "green", showContinuePrompt: false);
         }
@@ -93,23 +94,23 @@ namespace Chas_Ching.Core.Models
             }
         }
 
-        public static (bool isValid, string errorMessage) isPasswordValid(string password)
-        {   // Check if the password is less than 5 characters
-            if (password.Length < 5)
+        public static (bool isValid, string errorMessage) isPasswordValid(string userPassword)
+        {   // Check if the userPassword is less than 5 characters
+            if (userPassword.Length < 5)
             {
                 return (false, "Lösenordet måste vara minst 5 tecken långt.");
             }
-            // Check if the password meets the other criteria (uppercase, lowercase, special character)
-            if (!(password.Any(char.IsUpper) && password.Any(char.IsLower) && password.Any(ch => "!@#$%^&*()_+[]{}|/;:,.<>?".Contains(ch))))
+            // Check if the userPassword meets the other criteria (uppercase, lowercase, special character)
+            if (!(userPassword.Any(char.IsUpper) && userPassword.Any(char.IsLower) && userPassword.Any(ch => "!@#$%^&*()_+[]{}|/;:,.<>?".Contains(ch))))
             {
                 return (false, "Lösenord måste innehålla minst 1 stor och små bokstav med minst ett specialtecken.");
             }
-            // Check if the password is empty
-            if (string.IsNullOrWhiteSpace(password))
+            // Check if the userPassword is empty
+            if (string.IsNullOrWhiteSpace(userPassword))
             {
                 return (false, "Lösenordet får inte vara tomt.");
             }
-            return (true, string.Empty); // Return true and an empty string if the password is valid
+            return (true, string.Empty); // Return true and an empty string if the userPassword is valid
         }
 
         /* Metoderna används inte i programmet
@@ -140,9 +141,9 @@ namespace Chas_Ching.Core.Models
                 Console.WriteLine("User not found.");
             }
         }
-        public static void Login(string userName, string password)
+        public static void Login(string userName, string userPassword)
         {   // Attempts to log in a user by checking if the provided username exists
-            if (VerifyUser(userName, password))
+            if (VerifyUser(userName, userPassword))
             {
                 Console.WriteLine($"Login successful for user: {userName}");
             }

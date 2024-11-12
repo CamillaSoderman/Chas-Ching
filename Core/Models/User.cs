@@ -2,16 +2,17 @@
 {
     public abstract class User
     {   // Access Modifiers. Only code in the same class or in a derived class can access protected internal members.
-        protected internal string userName { get; set; }
-        protected internal string Password { get; set; }
+
+        protected internal string UserName { get; set; }
+        protected internal string UserPassword { get; set; }
         protected internal bool IsLocked { get; set; } = false;
 
         private int loginAttempts;
 
-        protected User(string userName, string password)
+        protected User(string userName, string userPassword)
         {
-            this.userName = userName;
-            Password = password;
+            UserName = userName;
+            UserPassword = userPassword;
             loginAttempts = 0;
         }
 
