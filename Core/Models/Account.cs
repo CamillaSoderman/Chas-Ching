@@ -22,6 +22,19 @@ namespace Chas_Ching.Core.Models
         {   // Return the balance minus the pending amount
             return Balance - PendingAmount;
         }
+        
+        public void Deposit(decimal amount)
+        {   // Method to deposit money into an account
+            if (amount <= 0)
+            {
+                Console.WriteLine("Invalid amount");
+            }
+            else
+            {
+                Balance += amount;
+                Console.WriteLine($"Deposit successful. New balance: {Balance}");
+            }
+        }
 
         public void Withdraw(decimal amount)
         {   // Method to withdraw money from an account
