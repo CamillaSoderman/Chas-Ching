@@ -148,12 +148,19 @@ namespace Chas_Ching.Core.Models
             UIHelper.ShowContinuePrompt();
         }
 
-        public void DepositToAccount()
+        public void MakeDeposit()
         {
+            var selectAccount = AnsiConsole.Prompt(
+                new SelectionPrompt<string>()
+                    .Title("[blue]Välj konto att sätta in pengar på:[/]")
+                    .PageSize(10)
+                    .AddChoices(Accounts.Select(a => $"Konto {a.AccountId}")));
             
+            
+
         }
         
-        public void WithdrawFromAccount()
+        public void MakeWithdraw()
         {
             
         }
