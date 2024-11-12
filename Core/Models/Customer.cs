@@ -117,6 +117,36 @@ namespace Chas_Ching.Core.Models
             UIHelper.ShowContinuePrompt();
         }
 
+        // Method to open a new savings account
+        public void OpenSavingsAccount()
+        {
+            CurrencyType selectedCurrency = CurrencyType.SEK; // All savings account are locked to SEK currency
+            AccountType accountType = AccountType.SavingsAccount;
+            decimal initialBalance = 0;
+            decimal interestRate = 0;
+            
+            Console.Clear();
+            AnsiConsole.Status()
+                .Spinner(Spinner.Known.Dots)
+                .Start("Skapar nytt sparkonto...", ctx =>
+                {
+                    Thread.Sleep(1000);
+                });
+            
+            // Generate unique account ID and add the new account to the Accounts list
+            var accountId = GenerateUserId();
+            var savingsAccount = new Account(accountId, initialBalance, selectedCurrency, AccountType.SavingsAccount);
+            Accounts.Add(savingsAccount);
+            
+            // Confirmation message and continue prompt
+            Console.Clear();
+            AsciiArt.PrintSuccessLogo();
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"Sparkonto skapat med ID {accountId}");
+            Console.ResetColor();
+            UIHelper.ShowContinuePrompt();
+        }
+        
         public int GenerateUserId()
         {   // Method to generate a unique user ID
             int userId = 0;
