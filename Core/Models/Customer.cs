@@ -253,23 +253,14 @@ namespace Chas_Ching.Core.Models
                         Thread.Sleep(2000);
                     }
                 }
-                else
-                {
-                    Console.Clear();
-                    Console.WriteLine($"Transaktion: {transaction.TransactionId} köad {DateTime.Now}");
-                    Console.WriteLine($"\nTransaktionen kommer att genomföras om 15 minuter.");
-                    Thread.Sleep(2000);
-                }
-
                 return (true, transaction);
             }
             else
             {
-                DisplayService.ShowMessage("Kunde inte reservera beloppet för överföring.", "red");
+                DisplayService.ShowMessage("[reed]Kunde inte reservera beloppet för överföring.[/]", "red", true);
                 return (false, null);
             }
         }
-
         public (bool success, Transaction transaction) TransferFounds()
         {
             // 1. Check if there are accounts available for transfer

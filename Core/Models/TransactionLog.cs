@@ -2,20 +2,30 @@
 {
     public static class TransactionLog
     {
-        public static List<Transaction> transactions = new List<Transaction>();
+        private static readonly List<Transaction> transactions = new List<Transaction>();
+        private static readonly object _lock = new object();
 
         public static void LogTransaction(Transaction transaction)
         {
-            transactions.Add(transaction);
+            lock (_lock)
+            {
+                // Check if transaction already exists in the log
+                if (!transactions.Any(t => t.TransactionId == transaction.TransactionId))
+                {
+                    transactions.Add(transaction);
+                }
+            }
         }
-
         public static List<Transaction> GetTransactionHistory(Account account)
-        {   // Retrieves transactions involving the given account as either sender or receiver.
-            return transactions.Where(t =>
-                t.FromAccount.AccountId == account.AccountId ||
-                t.ToAccount.AccountId == account.AccountId).ToList();
+        {
+            lock (_lock)
+            {
+                return transactions
+                    .Where(t => t.FromAccount.AccountId == account.AccountId ||
+                               t.ToAccount.AccountId == account.AccountId)
+                    .ToList();
+            }
         }
-
         /* // Metoden används inte. Logiken är flyttad till GetTransactionHistory(Account account)
         public static List<Transaction> GetTransactionsForAccount(int accountId)
         {
