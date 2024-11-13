@@ -9,11 +9,16 @@ namespace Chas_Ching.Core.Models
         private System.Timers.Timer transactionTimer; // Timer to schedule transaction processing. The intervall is fixed
         private readonly TimeSpan processingInterval; // Defines the interval between transaction processing
         private readonly object locker; // Ensures thread when locking the queue for processing transactions
+        public static int TransactionDelayMinutes { get; set; } = 1; // Transaction delay in minutes (15 min referense to backlog)
 
+        public static DateTime GetExpectedCompletionTime(DateTime transactionDate)
+        {   // Helper method to calculate the expected completion time of a transaction
+            return transactionDate.AddMinutes(TransactionDelayMinutes);
+        }
         public TransactionScheduler()
         {
             pendingTransactions = new Queue<Transaction>();
-            processingInterval = TimeSpan.FromMinutes(15); // Process transactions every 15 minutes
+            processingInterval = TimeSpan.FromMinutes(TransactionDelayMinutes); // Set the processing time interval
             locker = new object();
         }
 
@@ -53,13 +58,16 @@ namespace Chas_Ching.Core.Models
 
         public void ProcessPendingTransactions()
         {
-            List<Transaction> retryTransactions = new List<Transaction>();
+
             lock (locker)
             {
+                List<Transaction> retryTransactions = new List<Transaction>();
+
                 while (pendingTransactions.Count > 0)
                 {
                     Transaction transaction = pendingTransactions.Dequeue();
-                    if ((DateTime.Now - transaction.Date).TotalMinutes >= 15) // If 15 minutes have passed since the transaction was created
+
+                    if ((DateTime.Now - transaction.Date).TotalMinutes >= TransactionDelayMinutes) // If "TransactionDelayMinutes" minutes have passed since the transaction was created
                     {
                         try
                         {
@@ -68,10 +76,7 @@ namespace Chas_Ching.Core.Models
                             if (transaction.Status == TransactionStatus.Completed)
                             {
                                 Console.WriteLine($"Transaction {transaction.TransactionId} processed successfully.");
-                            }
-                            else
-                            {
-                                throw new Exception("Transaction failed during processing");
+                                TransactionLog.LogTransaction(transaction);
                             }
                         }
                         catch (Exception ex)
