@@ -24,7 +24,7 @@
 
         // Admin Menu
         CreateNewCustomer,
-        ShowAllAccounts,
+        ShowAllCustomers,
         LockUser,
         UnlockUser,
         BackToMainAdmin
@@ -57,7 +57,7 @@
 
             // Admin menu
             { MenuChoice.CreateNewCustomer, "Skapa ny kund" },
-            { MenuChoice.ShowAllAccounts, "Lista alla konton" },
+            { MenuChoice.ShowAllCustomers, "Lista alla kunder" },
             { MenuChoice.LockUser, "Lås användare" },
             { MenuChoice.UnlockUser, "Lås upp användare" },
             { MenuChoice.BackToMainAdmin, "Logga ut" }
@@ -96,7 +96,7 @@
         {   // Returns an array of admin menu options as MenuChoice items.
             MenuChoice[] choices = new MenuChoice[5]; // Specify the size of the array
             choices[0] = MenuChoice.CreateNewCustomer;
-            choices[1] = MenuChoice.ShowAllAccounts;
+            choices[1] = MenuChoice.ShowAllCustomers;
             choices[2] = MenuChoice.LockUser;
             choices[3] = MenuChoice.UnlockUser;
             choices[4] = MenuChoice.BackToMainAdmin;

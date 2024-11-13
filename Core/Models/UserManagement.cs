@@ -6,7 +6,10 @@ namespace Chas_Ching.Core.Models
 {
     public class UserManagement
     {   // List of registered users
-        public static readonly List<User> registeredUsers = new List<User>();
+        public static readonly List<User> registeredUsers = new List<User>(); 
+        
+        Customer customer = new Customer("Lisa", "123");
+        Customer cust2 = new Customer("Oscar", "123");
 
         public static User? FindUser(string userName)
         {   // Find a user by username. StringComparison.OrdinalIgnoreCase ignores case and returns the first match. Returns null if not found.
