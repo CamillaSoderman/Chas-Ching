@@ -9,6 +9,7 @@ namespace Chas_Ching.Core.Models
         public CurrencyType Currency { get; set; }
         public AccountType Type { get; set; } // AccountType is an enum with BankAccount, LoanAccount and SavingsAccount
         public decimal PendingAmount { get; set; } = 0; // Reserved amount to avoid overdraft when a pending transaction is ongoing
+        public decimal InterestRate { get; set; } // Annual Interest Rate in %
 
         public Account(int accountNumber, decimal initialBalance, CurrencyType currency, AccountType type = AccountType.BankAccount)
         {
@@ -16,11 +17,17 @@ namespace Chas_Ching.Core.Models
             Balance = initialBalance;
             Currency = currency;
             Type = type;
+            InterestRate = 0;
         }
 
         public decimal GetBalance()
         {   // Return the balance minus the pending amount
             return Balance - PendingAmount;
+        }
+        
+        public void Deposit(decimal amount)
+        {   // Method to deposit money into an account
+            Balance += amount;
         }
 
         public void Withdraw(decimal amount)

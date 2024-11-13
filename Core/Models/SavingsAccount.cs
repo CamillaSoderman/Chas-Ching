@@ -5,11 +5,17 @@ namespace Chas_Ching.Core.Models;
 
 public class SavingsAccount : Account
 {
-    public decimal InterestRate { get; set; } = 2.5m; // Annual Interest Rate in % (Changeable)
-
     public SavingsAccount(int accountID, decimal balance, CurrencyType currency)
-        : base(accountID, balance, currency)
+        : base(accountID, balance, currency, AccountType.SavingsAccount)
     {
+        InterestRate = 2.5m; // Default interest rate for a savings account
+    }
+    
+    // Placeholder for future implementation (Mao)
+    public virtual void GetInterest(decimal amount)
+    {
+        decimal interest = CalculateInterest(amount);
+        Deposit(interest);
     }
 
     // Method to calculate interest on a deposit into a savings account

@@ -35,53 +35,61 @@ public class MainMenu
     }
 
     private void HandleCustomerLogin()
-    {   // Resnponsible for handling the customer login. Ask for email and password, verify user and start customer menu
-        string userEmail = DisplayService.AskForInput("Skriv in din email-address:");
-        string password = DisplayService.AskForInput("Skriv in ditt lösenord:");
+    {   // Resnponsible for handling the customer login. Ask for userName and password, verify user and start customer menu
+        bool isLoggedIn = false;
 
-        var user = UserManagement.FindUser(userEmail); // Find user by email
+        // WIP: Implement a loop to keep asking for login until user is logged in
+        
+            string userName = DisplayService.AskForInput("Skriv in ditt användarnamn: ");
+            string password = DisplayService.AskForInput("Skriv in ditt lösenord:");
+            userName = userName.ToLower(); // Convert userName to lowercase
 
-        if (user != null && UserManagement.VerifyUser(userEmail, password))
-        {
-            if (user is Customer customer)
+            var user = UserManagement.FindUser(userName); // Find user by userName
+
+            if (user != null && UserManagement.VerifyUser(userName, password))
             {
-                var customerMenu = new CustomerMenu(customer); // Create new instance of CustomerMenu
-                customerMenu.Start();
+                if (user is Customer customer)
+                {
+                    var customerMenu = new CustomerMenu(customer); // Create new instance of CustomerMenu
+                    customerMenu.Start();
+                }
             }
-        }
-        else
-        {   // Display error message if login fails
-            DisplayService.ShowMessage($"Login misslyckades! Kontrollera din {userEmail} och lösenord.", "red", showContinuePrompt: false);
-            AsciiArt.PrintErrorLogo();
-            UIHelper.ShowContinuePrompt();
-        }
+            else
+            {
+                // Display error message if login fails
+                DisplayService.ShowMessage($"Login misslyckades! Kontrollera din {userName} och lösenord.", "red",
+                    showContinuePrompt: false);
+                AsciiArt.PrintErrorLogo();
+                UIHelper.ShowContinuePrompt();
+            }
     }
 
     private void HandleCreateAccount()
-    {   // Responsible for handling the account creation. Ask for email and password, validate and create account
-        string userEmail;
+    {   // Responsible for handling the account creation. Ask for userName and password, validate and create account
+        string userName;
         string userPassword;
 
-        // Get and validate email
+        // Get and validate userName
         do
         {
             Console.Clear();
-            userEmail = DisplayService.AskForInput("Skriv in din emailadress (eller 'Q' för att gå tillbaka)");
+            userName = DisplayService.AskForInput("Skriv in ett användarnamn minst 5 tecken (eller 'Q' för att gå tillbaka)");
 
-            if (userEmail.ToLower() == "q")
+            if (userName.ToLower() == "q")
             {
                 return;
             }
 
-            var (isValid, errorMessage) = UserManagement.isValidEmail(userEmail);
+            var (isValid, errorMessage) = UserManagement.IsUserNameValid(userName);
 
             if (!isValid)
             {
-                DisplayService.ShowMessage("Felaktig e-postadress! E-postadressen måste innehålla @ och en domän (exempel@domain.com)", "red", showContinuePrompt: false);
                 AsciiArt.PrintErrorLogo();
                 UIHelper.ShowContinuePrompt();
             }
-        } while (!UserManagement.isValidEmail(userEmail).isValid);
+        } while (!UserManagement.IsUserNameValid(userName).isValid);
+
+        userName = userName.ToLower(); // Convert userName to lowercase
 
         // Get and validate password
         do
@@ -93,27 +101,20 @@ public class MainMenu
                 return;
             }
 
-            var (isValid, errorMessage) = UserManagement.isPasswordValid(userPassword);
+            var (isValid, errorMessage) = UserManagement.IsPasswordValid(userPassword);
 
             if (!isValid)
             {
                 DisplayService.ShowMessage(errorMessage, "red", showContinuePrompt: false);
                 AsciiArt.PrintErrorLogo();
             }
-        } while (!UserManagement.isPasswordValid(userPassword).isValid);
-
-        // Check if user already exists. If exists, display error message and return to main menu without calling CreateAccountWithAnimation
-        if (UserManagement.FindUser(userEmail) != null)
-        {
-            DisplayService.ShowMessage("En användare med den e-postadressen är redan registrerad.", "yellow", showContinuePrompt: false);
-            return;
-        }
+        } while (!UserManagement.IsPasswordValid(userPassword).isValid);
 
         // Add a delay and loading animation to simulate account creation process to a database
-        CreateAccountWithAnimation(userEmail, userPassword);
+        CreateAccountWithAnimation(userName, userPassword);
     }
 
-    private void CreateAccountWithAnimation(string email, string password)
+    private void CreateAccountWithAnimation(string userName, string password)
     {   // Simulate account creation with a delay and loading animation ex. contacting a database
         bool isSuccess = false;
 
@@ -124,7 +125,7 @@ public class MainMenu
                 Thread.Sleep(2000); // Simulate a delay of 2 seconds
                 try
                 {
-                    UserManagement.RegisterUser(email, password);
+                    UserManagement.RegisterUser(userName, password);
                     isSuccess = true;
                 }
                 catch
@@ -135,7 +136,7 @@ public class MainMenu
 
         if (isSuccess)
         {
-            DisplayService.ShowMessage("Ditt konto har skapat! Välkommen till Chas Ching Bank!", "green", showContinuePrompt: false);
+            DisplayService.ShowMessage($"Ditt konto har skapat! Välkommen till Chas Ching Bank! {userName}", "green", showContinuePrompt: false);
             AsciiArt.PrintSuccessLogo();
         }
         else
