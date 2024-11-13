@@ -13,7 +13,7 @@ namespace Chas_Ching.Core.Models
 
         public static void CreateAdmin()
         {
-                Admin admin1 = new Admin("Admin@chasching.se", "Admin123!");         //Admin login credentials
+                Admin admin1 = new Admin("Admin", "123!");         //Admin login credentials
                 UserManagement.registeredUsers.Add(admin1);
             
         }
