@@ -22,7 +22,7 @@ namespace Chas_ChingDemo.UI.Display
         private static readonly string SuccessLogo = """
        **                      **
       (  )--------------------(  )
-      |  |     SUCCESS!       |  |
+      |  |     LYCKADES!      |  |
       |  |       ==)          |  |
       |  |                    |  |
       (__)--------------------(__)
@@ -31,7 +31,7 @@ namespace Chas_ChingDemo.UI.Display
         private static readonly string ErrorLogo = """
        **                      **
       (  )--------------------(  )
-      |  |      ERROR!        |  |
+      |  |    MISSLYCKADES!   |  |
       |  |       ==(          |  |
       |  |                    |  |
       (__)--------------------(__)

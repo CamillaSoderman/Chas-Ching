@@ -15,16 +15,22 @@
             UserPassword = userPassword;
             loginAttempts = 0;
         }
-
+        //Method to use if the user i locked.
         public bool IsUserLocked() => IsLocked;
-
+       
+        //Method to increment the login attempts.
+        //Lockinguser account after failed login attempts.
         public void IncrementLoginAttempts()
         {
-            loginAttempts++;
-            if (loginAttempts >= 3)
+            loginAttempts = 0;
+           
+            //If loginAttempts is greater than 3, lock the user account.
+            if (loginAttempts >3)
             {
                 IsLocked = true;
+               
             }
         }
+
     }
 }

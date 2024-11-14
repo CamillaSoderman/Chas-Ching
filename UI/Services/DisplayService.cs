@@ -51,7 +51,7 @@ public static class DisplayService
 
     public static string AskForInput(string prompt)
     {   // Responsible for asking the user for input. Ex: "Enter email address", "Enter password"
-        AnsiConsole.MarkupLine($"[blue]{prompt}:[/]");
+        AnsiConsole.MarkupLine($"[blue]{prompt}[/]");
         Console.ForegroundColor = ConsoleColor.Green;
 
         // ?? is a null-coalescing operator. If null, return empty string, if not, return the string

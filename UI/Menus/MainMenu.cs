@@ -34,38 +34,114 @@ public class MainMenu
         }
     }
 
+
+
+  
     private void HandleCustomerLogin()
-    {   // Resnponsible for handling the customer login. Ask for userName and password, verify user and start customer menu
-        bool isLoggedIn = false;
 
-        // WIP: Implement a loop to keep asking for login until user is logged in
-        
-            string userName = DisplayService.AskForInput("Skriv in ditt användarnamn: ");
-            string password = DisplayService.AskForInput("Skriv in ditt lösenord:");
-            userName = userName.ToLower(); // Convert userName to lowercase
+    {
+        // Resnponsible for handling the customer login. Ask for userName and userPassword, verify user and start customer menu
+        const int maxAttempts = 3;
 
-            var user = UserManagement.FindUser(userName); // Find user by userName
+        bool isValidUser = false; // Flag to control the loop and ensure valid user login
 
-            if (user != null && UserManagement.VerifyUser(userName, password))
+        // Loop until a valid user logs in or is locked out
+        while (!isValidUser)
+        {
+
+            string userName = DisplayService.AskForInput("Skriv in ett användarnamn minst 5 tecken (eller 'Q' för att gå tillbaka)");
+            if (userName.ToLower() == "q")
             {
-                if (user is Customer customer)
-                {
-                    var customerMenu = new CustomerMenu(customer); // Create new instance of CustomerMenu
-                    customerMenu.Start();
-                }
+                return;
             }
-            else
+
+            if (string.IsNullOrWhiteSpace(userName)) // Validate username length and non-whitespace
             {
-                // Display error message if login fails
-                DisplayService.ShowMessage($"Login misslyckades! Kontrollera din {userName} och lösenord.", "red",
-                    showContinuePrompt: false);
+                DisplayService.ShowMessage("Användarnamn får inte vara tomt.", "red", showContinuePrompt: false);
                 AsciiArt.PrintErrorLogo();
                 UIHelper.ShowContinuePrompt();
+                continue; // Re-ask for username if validation fails
             }
+
+            userName = userName.ToLower(); // Convert userName to lowercase
+            var user = UserManagement.FindUser(userName);
+
+
+            // If the user doesn't exist, inform the user and ask for the username again
+            if (user == null)
+            {
+
+                DisplayService.ShowMessage($"Användaren {userName} finns inte.", "red", showContinuePrompt: false);
+                AsciiArt.PrintErrorLogo();
+                UIHelper.ShowContinuePrompt();
+
+                continue; // Skip password prompts and re-ask for username
+            }
+
+            // If the user is locked, show lock message and exit
+            if (user.IsUserLocked())
+            {
+                DisplayService.ShowMessage($"Användaren {userName} är låst pga. för många misslyckade försök.", "red", showContinuePrompt: false);
+                AsciiArt.PrintErrorLogo();
+                UIHelper.ShowContinuePrompt();
+                return; // Exit after showing the lock message
+            }
+
+            int attemptCount = 0; // Reset attempt count for each new login attempt session
+
+            // Loop for login attempts until max attempts are reached
+            while (attemptCount < maxAttempts)
+            {
+                string userPassword = DisplayService.AskForInput("Skriv in ditt lösenord :");
+
+                // If password is correct, proceed to the customer menu
+                if (UserManagement.VerifyUser(userName, userPassword))
+                {
+                    if (user is Customer customer)
+                    {
+                        var customerMenu = new CustomerMenu(customer);
+                        customerMenu.Start();
+                        isValidUser = true; // Set the flag to true to exit the outer loop
+                        return; // Successful login, exit the method
+                    }
+                }
+                else
+                {
+                    // Password is incorrect, increment login attempts
+                    user.IncrementLoginAttempts();
+
+                    // Check if the user is now locked after incrementing login attempts
+                    if (user.IsUserLocked())
+                    {
+                        DisplayService.ShowMessage($"Du har misslyckats 3 gånger. Vänligen kontakta oss.", "red", showContinuePrompt: false);
+                        AsciiArt.PrintErrorLogo();
+                        UIHelper.ShowContinuePrompt();
+                        return; // Exit after locking the user
+                    }
+
+                    // Display error message for incorrect password with remaining attempts
+                    int remainingAttempts = maxAttempts - attemptCount - 1; // Calculate remaining attempts
+                    DisplayService.ShowMessage($"Login misslyckades! Försök igen. ({remainingAttempts} försök kvar)", "red", showContinuePrompt: false);
+                    AsciiArt.PrintErrorLogo();
+                    UIHelper.ShowContinuePrompt();
+                }
+
+                attemptCount++; // Increment the attempt count
+            }
+
+            // If the loop exits after max attempts, inform the user
+            DisplayService.ShowMessage("Du har misslyckats 3 gånger. Vänligen kontakta oss.", "red", showContinuePrompt: false);
+            AsciiArt.PrintErrorLogo();
+            UIHelper.ShowContinuePrompt();
+            return; // Lock the user after 3 failed attempts and exit the method
+        }
+
     }
 
+
+
     private void HandleCreateAccount()
-    {   // Responsible for handling the account creation. Ask for userName and password, validate and create account
+    {   // Responsible for handling the account creation. Ask for userName and userPassword, validate and create account
         string userName;
         string userPassword;
 
@@ -91,10 +167,10 @@ public class MainMenu
 
         userName = userName.ToLower(); // Convert userName to lowercase
 
-        // Get and validate password
+        // Get and validate userPassword
         do
         {
-            userPassword = DisplayService.AskForInput("Skriv in ditt lösenord password (eller 'Q' för att gå tillbaka)");
+            userPassword = DisplayService.AskForInput("Skriv in ditt lösenord (eller 'Q' för att gå tillbaka)");
 
             if (userPassword.ToLower() == "q")
             {
@@ -149,17 +225,17 @@ public class MainMenu
     }
 
     private void HandleAdminLogin()
-    {   // Resnponsible for handling the customer login. Ask for email and password, verify user and start customer menu
-        string userEmail = DisplayService.AskForInput("Skriv in din email-address:");
+    {   // Resnponsible for handling the customer login. Ask for email and userPassword, verify user and start customer menu
+        string userName = DisplayService.AskForInput("Skriv in din email-address:");
         string password = DisplayService.AskForInput("Skriv in ditt lösenord:");
         
         Admin.CreateAdmin();
 
 
 
-        var user = UserManagement.FindUser(userEmail); // Find user by email
-
-        if (user != null && UserManagement.VerifyUser(userEmail, password))
+        var user = UserManagement.FindUser(userName); // Find user by email
+        
+        if (user != null && UserManagement.VerifyUser(userName, password))
         {
             if (user is Admin admin)
             {
@@ -170,7 +246,7 @@ public class MainMenu
         }
         else
         {   // Display error message if login fails
-            DisplayService.ShowMessage($"Login misslyckades! Kontrollera din {userEmail} och lösenord.", "red", showContinuePrompt: false);
+            DisplayService.ShowMessage($"Login misslyckades! Kontrollera din {userName} och lösenord.", "red", showContinuePrompt: false);
             AsciiArt.PrintErrorLogo();
             UIHelper.ShowContinuePrompt();
         }
