@@ -16,6 +16,7 @@
                 }
             }
         }
+
         public static List<Transaction> GetTransactionHistory(Account account)
         {
             lock (_lock)
@@ -26,12 +27,6 @@
                     .ToList();
             }
         }
-        /* // Metoden används inte. Logiken är flyttad till GetTransactionHistory(Account account)
-        public static List<Transaction> GetTransactionsForAccount(int accountId)
-        {
-            return transactions.Where(t => t.FromAccount.AccountId == accountId || t.ToAccount.AccountId == accountId).ToList();
-        }
-         */
     }
 }
 

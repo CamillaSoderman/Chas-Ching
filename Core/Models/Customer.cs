@@ -13,7 +13,6 @@ namespace Chas_Ching.Core.Models
         public decimal Loan { get; set; }
         public TransactionScheduler TransactionScheduler { get; private set; }
 
-
         public Customer(string userName, string UserPassword) : base(userName, UserPassword)
         {
             Accounts = new List<Account>();
@@ -85,7 +84,7 @@ namespace Chas_Ching.Core.Models
             // Create a new account and add it to the Accounts list
             var newAccount = new Account(newAccountId, initialBalance, selectedCurrency);
             Accounts.Add(newAccount);
-            
+
             Console.Clear();
             AnsiConsole.Status()
                 .Spinner(Spinner.Known.Dots)
@@ -109,12 +108,12 @@ namespace Chas_Ching.Core.Models
             CurrencyType selectedCurrency = CurrencyType.SEK; // All savings account are locked to SEK currency
             AccountType accountType = AccountType.SavingsAccount;
             decimal initialBalance = 0;
-            
+
             // Generate unique account ID and add the new account to the Accounts list
             var accountId = GenerateUserId();
             var savingsAccount = new SavingsAccount(accountId, initialBalance, selectedCurrency);
             Accounts.Add(savingsAccount);
-            
+
             Console.Clear();
             AnsiConsole.Status()
                 .Spinner(Spinner.Known.Dots)
@@ -122,7 +121,7 @@ namespace Chas_Ching.Core.Models
                 {
                     Thread.Sleep(2000);
                 });
-            
+
             // Confirmation message and continue prompt
             Console.Clear();
             AsciiArt.PrintSuccessLogo();
@@ -142,17 +141,17 @@ namespace Chas_Ching.Core.Models
                     .Title("[blue]Välj konto att sätta in pengar på:[/]")
                     .PageSize(10)
                     .AddChoices(Accounts.Select(a => $"Konto {a.AccountId}")));
-            
+
             // Find the selected account in the Accounts list
             Account selectedAccount = Accounts.Find(a => $"Konto {a.AccountId}" == selectAccount);
-            
+
             // Prompt user to select a deposit amount from a list of predefined values
             var depositAmount = AnsiConsole.Prompt(
                 new SelectionPrompt<decimal>()
                     .Title("[blue]Ange belopp att sätta in:[/]")
                     .PageSize(10)
                     .AddChoices(100, 200, 500, 1000));
-            
+
             // Start a status spinner to simulate the deposit process
             AnsiConsole.Status()
                 .Spinner(Spinner.Known.Dots)
@@ -160,16 +159,16 @@ namespace Chas_Ching.Core.Models
                 {
                     Thread.Sleep(2000);
                 });
-            
+
             // Deposit the amount into the selected account
             selectedAccount.Deposit(depositAmount);
-            
+
             Console.Clear();
             AsciiArt.PrintSuccessLogo();
             AnsiConsole.MarkupLine($"[green] {depositAmount} {selectedAccount.Currency} insatt på konto {selectedAccount.AccountId} [/]");
             UIHelper.ShowContinuePrompt();
         }
-        
+
         public int GenerateUserId()
         {   // Method to generate a unique user ID
             int userId = 0;
@@ -195,28 +194,27 @@ namespace Chas_Ching.Core.Models
                     .Title("[blue]Välj konto att överföra pengar ifrån:[/]")
                     .PageSize(10)
                     .AddChoices(Accounts.Select(a => $"Konto {a.AccountId}")));
-            
+
             // Find the selected account in the Accounts list
             Account selectedFromAccount = Accounts.Find(a => $"Konto {a.AccountId}" == selectFromAccount);
-            
+
             // Choose account to transfer money to
             var selectToAccount = AnsiConsole.Prompt(
                 new SelectionPrompt<string>()
                     .Title("[blue]Välj konto att överföra pengar till:[/]")
                     .PageSize(10)
                     .AddChoices(Accounts.Select(a => $"Konto {a.AccountId}")));
-            
+
             // Find the selected account in the Accounts list
             Account selectedToAccount = Accounts.Find(a => $"Konto {a.AccountId}" == selectToAccount);
-            
-            
+
             // 8. Ensure the source and destination accounts are different
             if (selectedFromAccount.AccountId == selectedToAccount.AccountId)
             {
                 DisplayService.ShowMessage("Du kan inte överföra pengar till samma konto.", "red");
                 return (false, null);
             }
-            
+
             // Ask for the transfer amount
             var amountInput = DisplayService.AskForInput("[blue]Ange belopp att överföra[/]");
             if (!decimal.TryParse(amountInput, out decimal transferAmount) || transferAmount <= 0)
@@ -224,7 +222,7 @@ namespace Chas_Ching.Core.Models
                 DisplayService.ShowMessage("Ogiltigt belopp. Ange ett positivt nummer.", "red");
                 return (false, null);
             }
-            
+
             // 9. Ensure the source account has enough funds for the transfer
             if (transferAmount > selectedFromAccount.GetBalance())
             {
@@ -261,6 +259,7 @@ namespace Chas_Ching.Core.Models
                 return (false, null);
             }
         }
+
         public (bool success, Transaction transaction) TransferFounds()
         {
             // 1. Check if there are accounts available for transfer
@@ -420,87 +419,5 @@ namespace Chas_Ching.Core.Models
             AsciiArt.PrintSuccessLogo();
             UIHelper.ShowContinuePrompt(); // Show continue prompt
         }
-
-        /* Metoder som inte används idag. ViewTransaction (Styrs med transacrion), ViewAccount(Koppla senare med Admin.CS) och ViewAccountBalance(Sker i CustomerMenu)
-        public void ViewTransaction()
-        {
-            if (Accounts.Count == 0)
-            {
-                DisplayService.ShowMessage("Inga konton hittades", "yellow");
-                return;
-            }
-
-            Console.WriteLine("Välj konto att visa transaktioner för:");
-            foreach (var account in Accounts)
-            {
-                Console.WriteLine($"Konto {account.AccountId}");
-            }
-
-            if (int.TryParse(Console.ReadLine(), out int accountId))
-            {
-                var account = Accounts.FirstOrDefault(a => a.AccountId == accountId);
-                if (account != null)
-                {
-                    var transactions = TransactionLog.GetTransactionHistory(account);
-                    if (transactions.Any())
-                    {
-                        foreach (var transaction in transactions)
-                        {
-                            Console.WriteLine($"Transaktions-ID: {transaction.TransactionId}");
-                            Console.WriteLine($"Belopp: {transaction.Amount}");
-                            Console.WriteLine($"Datum: {transaction.Date}");
-                            Console.WriteLine($"Status: {transaction.Status}");
-                            Console.WriteLine("------------------------");
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("Inga transaktioner hittades för detta konto.");
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("Kontot hittades inte.");
-                }
-            }
-            else
-            {
-                Console.WriteLine("Ogiltigt kontonummer.");
-            }
-        }
-        public void ViewAccounts()
-        {   //Method displays all accounts and their balances
-            if (Accounts.Count == 0)
-            {
-                Console.WriteLine("No accounts found");
-            }
-            else
-            {
-                foreach (var account in Accounts)
-                    Console.WriteLine($"Account ID: {account.AccountId}, Balance: {account.Balance}");
-            }
-        }
-        public void ViewAccountBalance()
-        {   // Method to view the balance of a specific account
-            // Prompt user to enter the account ID and validate input
-            Console.Write("Enter account ID to view balance: ");
-            if (int.TryParse(Console.ReadLine(), out int accountId))
-            {
-                var account = Accounts.FirstOrDefault(a => a.AccountId == accountId);
-                if (account != null)
-                {
-                    Console.WriteLine($"Account ID: {account.AccountId}, Balance: {account.Balance} {account.Currency}");
-                }
-                else
-                {
-                    Console.WriteLine("Account not found.");
-                }
-            }
-            else
-            {
-                Console.WriteLine("Invalid account ID.");
-            }
-        }
-         */
     }
 }

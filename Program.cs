@@ -1,6 +1,4 @@
-﻿using Chas_Ching.Core.Models;
-
-namespace Chas_Ching
+﻿namespace Chas_Ching
 {
     public class Program
     {

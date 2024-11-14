@@ -24,7 +24,7 @@ namespace Chas_Ching.Core.Models
         {   // Return the balance minus the pending amount
             return Balance - PendingAmount;
         }
-        
+
         public void Deposit(decimal amount)
         {   // Method to deposit money into an account
             Balance += amount;
@@ -54,61 +54,5 @@ namespace Chas_Ching.Core.Models
         {   // Release reserved funds when a transaction is completed
             PendingAmount -= amount;
         }
-
-        /* Borttagna metoder. Transfer sker via Transaction-klassen. Deposit används för nuvarande inte
-        public void Deposit(decimal amount)
-        {   // Method to deposit money into an account
-            if (amount <= 0)
-            {
-                Console.WriteLine("Invalid amount");
-            }
-            else
-            {
-                Balance += amount;
-                Console.WriteLine($"Deposit successful. New balance: {Balance}");
-            }
-        }
-
-        public bool Transfer(decimal amount, Account toAccount, TransactionScheduler scheduler)
-        {   // Method to transfer money from one account to another
-            if (amount <= 0 || amount > Balance)
-            {
-                return false;
-            }
-
-            // Skapa transaktionen och lägg den i kön istället för att genomföra den direkt
-            var transaction = new Transaction(amount, this, toAccount);
-            scheduler.EnqueueTransaction(transaction);
-            return true;
-        }
-
-        public bool TransferOwnAccounts(decimal amount, Account toAccount)
-        {   // Ändrar från direktöverföring till väntande överföring
-            if (amount <= 0 || amount > GetBalance())
-            {
-                return false;
-            }
-
-            decimal convertedAmount = amount;
-            if (Currency != toAccount.Currency)
-            {
-                try
-                {
-                    convertedAmount = CurrencyExchange.Convert(amount, Currency, toAccount.Currency);
-                }
-                catch (Exception)
-                {
-                    return false;
-                }
-            }
-
-            if (!ReserveFunds(amount))
-            {
-                return false;
-            }
-
-            return true;
-        }
-         */
     }
 }
