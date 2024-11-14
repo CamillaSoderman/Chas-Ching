@@ -1,4 +1,5 @@
-﻿using Chas_Ching.Core.Models;
+﻿using Chas_Ching.Core.Enums;
+using Chas_Ching.Core.Models;
 using Chas_Ching.UI.Settings;
 using Chas_ChingDemo.UI.Display;
 using Spectre.Console;
@@ -8,6 +9,9 @@ using Spectre.Console;
 /// </summary>
 public class AdminMenu
 {
+    private Customer _customer;
+    private int _customerID;
+
     public AdminMenu(Admin admin)
     {
     }
@@ -24,8 +28,8 @@ public class AdminMenu
                     CreateNewCustomer(); 
                     break;
 
-                case MenuChoice.ShowAllAccounts:
-                    ShowAllAccounts();
+                case MenuChoice.ShowAllCustomers:
+                    ShowAllCustomers();
                     break;
 
                 case MenuChoice.LockUser:
@@ -51,30 +55,84 @@ public class AdminMenu
         var userPassword = DisplayService.AskForInput("Mata in lösenord");
         Admin.CreateUserCustomer(userName, userPassword);
         //var userPassword = DisplayService.AskForInput("Enter user Password");
-        
-        
+       
 
 
     }
 
-    private void ShowAllAccounts()
+    private void ShowAllCustomers(bool showPrompt = true)
     {
         Console.Clear();
-        DisplayService.ShowHeader("Kundöversikt");
+
+        DisplayService.ShowHeader("Visa alla kunder");
+
+      
+
 
         var table = new Table()
-            .AddColumn(new TableColumn("Account Number").Centered())
-            .AddColumn(new TableColumn("Owner"))
-            .AddColumn(new TableColumn("Status").Centered());
+        .AddColumn(new TableColumn("Kund namn").RightAligned())
+        .AddColumn(new TableColumn("Kund.nr").RightAligned()) 
+        .AddColumn(new TableColumn("Konto.nr").Centered())
+        .AddColumn(new TableColumn("Totalt Saldo").RightAligned())
+        .AddColumn(new TableColumn("Reserverat").RightAligned())
+        .AddColumn(new TableColumn("Tillgängligt").RightAligned())
+        .AddColumn(new TableColumn("Valuta").Centered())
+        .AddColumn(new TableColumn("Konto Typ").Centered());
+
 
         table.BorderColor(Color.Blue);
 
-        // Demo data for display purposes
-        table.AddRow("12345", "Anna Andersson", "[green]Active[/]");
-        table.AddRow("67890", "Bengt Bengtsson", "[green]Active[/]");
+        // Loop genom lista registeredUsers som en customer för att sen kolla konton hos denna customer
+        foreach (var user in UserManagement.registeredUsers)
+        {
+            if (user is Customer customer)
+            {
+                _customer = customer;
+                _customerID = customer.userRandomId;
+
+                if (_customer.Accounts.Count == 0)
+                {   // If account list is empty, display a error message
+                    DisplayService.ShowMessage("Det finns inga öppna konton i banken", "yellow");
+                    return;
+                }
+
+                foreach (var account in _customer.Accounts)
+                {
+
+                    //  Check if account is a Loan Account or Bank Account and set the account type
+                    string accountType = account.Type == AccountType.LoanAccount ?
+                            "[blue]Lånkonto[/]" :
+                            "[green]Bankkonto[/]";
+
+                    // Make PendingAmount in yellow
+                    string pendingAmountText = account.PendingAmount > 0
+                        ? $"[yellow]{account.PendingAmount:F2}[/]"
+                        : account.PendingAmount.ToString("F2");
+
+
+                    table.AddRow(
+                            customer.UserName.ToString(),
+                            customer.userRandomId.ToString(),
+                            account.AccountId.ToString(),
+                            account.Balance.ToString("F2"),
+                            account.PendingAmount.ToString("F2"),
+                            account.GetBalance().ToString("F2"),
+                            account.Currency.ToString(),
+                            accountType);
+
+                }
+            }
+        }
+   
 
         AnsiConsole.Write(table);
         UIHelper.ShowContinuePrompt();
+
+        if (showPrompt)
+        {
+            UIHelper.ShowContinuePrompt(); // Show a continue prompt after the table
+        }
+    
     }
 
     private void HandleLockUser()

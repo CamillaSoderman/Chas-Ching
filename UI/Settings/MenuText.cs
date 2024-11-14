@@ -8,14 +8,12 @@
     {
         // Main Menu
         CustomerLogin,
-
         AdminLogin,
         CreateNewAccount,
         Exit,
 
         // Costumer Menu
         ShowAccount,
-
         OpenNewAccount,
         OpenSavingsAccount,
         MakeDeposit,
@@ -26,8 +24,7 @@
 
         // Admin Menu
         CreateNewCustomer,
-        ShowAllAccounts,
-
+        ShowAllCustomers,
         LockUser,
         UnlockUser,
         BackToMainAdmin
@@ -45,7 +42,7 @@
             // Main menu
             { MenuChoice.CustomerLogin, "Logga in som Kund" },
             { MenuChoice.AdminLogin, "Logga in som Admin" },
-            { MenuChoice.CreateNewAccount, "Skapa nytt konto" },
+            { MenuChoice.CreateNewAccount, "Skapa nytt kundkonto" },
             { MenuChoice.Exit, "Avsluta" },
 
             // Costumer menu
@@ -56,14 +53,14 @@
             { MenuChoice.MakeTransaction, "Transaktioner" },
             { MenuChoice.ApplyForLoan, "Ansök om Lån" },
             { MenuChoice.ExchangeCurrency, "Valutaväxling" },
-            { MenuChoice.BackToMainCustomer, "Återvänd till Huvudmeny" },
+            { MenuChoice.BackToMainCustomer, "Logga ut" },
 
             // Admin menu
             { MenuChoice.CreateNewCustomer, "Skapa ny kund" },
-            { MenuChoice.ShowAllAccounts, "Lista alla konton" },
+            { MenuChoice.ShowAllCustomers, "Lista alla kunder" },
             { MenuChoice.LockUser, "Lås användare" },
             { MenuChoice.UnlockUser, "Lås upp användare" },
-            { MenuChoice.BackToMainAdmin, "Återvänd till Huvudmeny" }
+            { MenuChoice.BackToMainAdmin, "Logga ut" }
         };
 
         public static string GetMenuText(MenuChoice choice)
@@ -99,7 +96,7 @@
         {   // Returns an array of admin menu options as MenuChoice items.
             MenuChoice[] choices = new MenuChoice[5]; // Specify the size of the array
             choices[0] = MenuChoice.CreateNewCustomer;
-            choices[1] = MenuChoice.ShowAllAccounts;
+            choices[1] = MenuChoice.ShowAllCustomers;
             choices[2] = MenuChoice.LockUser;
             choices[3] = MenuChoice.UnlockUser;
             choices[4] = MenuChoice.BackToMainAdmin;

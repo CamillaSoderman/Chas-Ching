@@ -38,6 +38,7 @@ public class MainMenu
 
   
     private void HandleCustomerLogin()
+
     {
         // Resnponsible for handling the customer login. Ask for userName and userPassword, verify user and start customer menu
         const int maxAttempts = 3;
@@ -134,6 +135,7 @@ public class MainMenu
             UIHelper.ShowContinuePrompt();
             return; // Lock the user after 3 failed attempts and exit the method
         }
+
     }
 
 

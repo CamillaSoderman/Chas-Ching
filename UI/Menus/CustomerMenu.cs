@@ -79,6 +79,7 @@ public class CustomerMenu
         .AddColumn(new TableColumn("Reserverat").RightAligned())
         .AddColumn(new TableColumn("Tillgängligt").RightAligned())
         .AddColumn(new TableColumn("Valuta").Centered())
+        .AddColumn(new TableColumn("Ränta").Centered())
         .AddColumn(new TableColumn("Konto Typ").Centered());
 
         // Loop through all accounts of the current customer and add them to the table
@@ -112,6 +113,7 @@ public class CustomerMenu
             account.PendingAmount.ToString("F2"),
             account.GetBalance().ToString("F2"),
             account.Currency.ToString(),
+            account.InterestRate.ToString("F2"),
             accountType);
         }
 
@@ -146,6 +148,7 @@ public class CustomerMenu
                     "Överför mellan egna konton",
                     "Överför till ett annat konto",
                     "Visa kommande överföringar",
+                    "Visa transaktionshistorik",
                     "Tillbaka"
                 }));
 
@@ -178,6 +181,10 @@ public class CustomerMenu
             case "Visa kommande överföringar":
                 ShowPendingTransactions();
                 break;
+
+            case "Visa transaktionshistorik":
+                ShowHistoryTransactions();
+                break;
         }
     }
 
@@ -185,15 +192,60 @@ public class CustomerMenu
     {
         Console.Clear();
         DisplayService.ShowHeader("En ny transaktion är skapad");
-        Console.WriteLine($"Transaktion: {transaction.TransactionId} köad: {DateTime.Now}");
-        Console.WriteLine($"\nTransaktionen kommer att genomföras om 15 minuter."); // Hardcoded time. Should be dynamic???
-        Console.WriteLine("\nTryck Enter för att se kommande transaktioner: ");
-        Console.ReadLine();
+        AnsiConsole.MarkupLine($"Transaktion-ID: [yellow]{transaction.TransactionId}[/] Köad:[green]{transaction.Date:yyyy-MM-dd}[/] kl:[green]{transaction.Date:HH:mm:ss}[/]");
+        AnsiConsole.WriteLine($"\nTransaktionen kommer att genomföras om {TransactionScheduler.TransactionDelayMinutes} minuter.");
+        UIHelper.ShowContinuePrompt();
         ShowPendingTransactions();
+    }
+    private void ShowHistoryTransactions()
+    {
+        Console.Clear();
+        DisplayService.ShowHeader("Historik över transaktioner");
+
+        // Get the transaction history of the current customer and store it in a variable from the TransactionLog class
+        var transactions = TransactionLog.GetTransactionHistory(_currentCustomer.Accounts.FirstOrDefault());
+
+        // Filter the transactions to only show the pending transactions
+        var completedTransactions = transactions.Where(t => t.Status == TransactionStatus.Completed).ToList();
+
+        // If there are no transactions made, display a message and return
+        if (!completedTransactions.Any())
+        {
+            DisplayService.ShowMessage("Här var det tomt!", "yellow", true);
+            return;
+        }
+
+        // Create a new table with columns for Transaction ID, From Account, To Account, Amount, Status and Expected Time
+        var table = new Table()
+            .AddColumn(new TableColumn("Transaktions ID").Centered())
+            .AddColumn(new TableColumn("Från konto").Centered())
+            .AddColumn(new TableColumn("Till konto").Centered())
+            .AddColumn(new TableColumn("Belopp").RightAligned())
+            .AddColumn(new TableColumn("Status").Centered())
+            .AddColumn(new TableColumn("Transaktionsdatum").Centered());
+
+        // Loop through all transactions and add them to the table
+        foreach (var transaction in completedTransactions)
+        {
+            var transactionProcessedTime = transaction.Date;
+
+            table.AddRow(
+                transaction.TransactionId.ToString(),
+                transaction.FromAccount.AccountId.ToString(),
+                transaction.ToAccount.AccountId.ToString(),
+                transaction.Amount.ToString("F2"),
+                "[green]Utförd[/]",
+                transactionProcessedTime.ToString("yyyy-MM-dd HH:mm:ss")
+            );
+        }
+
+        AnsiConsole.Write(table);
+        UIHelper.ShowContinuePrompt();
     }
 
     private void ShowPendingTransactions()
-    {   // Responsible for displaying the pending transactions of the current customer
+    {   
+        // Responsible for displaying the pending transactions of the current customer
         Console.Clear();
         DisplayService.ShowHeader("Kommande transaktioner");
 
@@ -205,7 +257,7 @@ public class CustomerMenu
         // If there are no pending transactions, display a message and return
         if (!pendingTransactions.Any())
         {
-            DisplayService.ShowMessage("Här var det tomt!", "yellow");
+            DisplayService.ShowMessage("Här var det tomt!", "yellow", true);
             return;
         }
 
@@ -216,12 +268,12 @@ public class CustomerMenu
             .AddColumn(new TableColumn("Till konto").Centered())
             .AddColumn(new TableColumn("Belopp").RightAligned())
             .AddColumn(new TableColumn("Status").Centered())
-            .AddColumn(new TableColumn("Förväntad väntetid").Centered());
+            .AddColumn(new TableColumn("Förväntad transaktion").Centered());
 
         // Loop through all pending transactions and add them to the table
         foreach (var transaction in pendingTransactions)
         {
-            var expectedTime = transaction.Date.AddMinutes(15); // Add 15 minutes to the transaction time. Should be dynamic???
+            var expectedTime = TransactionScheduler.GetExpectedCompletionTime(transaction.Date); // Add {GetExpectedCompletionTime} minutes to the transaction time
 
             table.AddRow(
                 transaction.TransactionId.ToString(),
@@ -229,7 +281,7 @@ public class CustomerMenu
                 transaction.ToAccount.AccountId.ToString(),
                 transaction.Amount.ToString("F2"),
                 "[yellow]Pågående[/]",
-                expectedTime.ToString("HH:mm:ss")
+                expectedTime.ToString("yyyy-MM-dd HH:mm:ss")
             );
         }
 
@@ -262,7 +314,14 @@ public class CustomerMenu
     }
 
     private void HandleMakeDeposit()
-    {
+    {   // Responsible for handling the deposit
+        
+        if (_currentCustomer.Accounts.Count == 0)
+        {
+            DisplayService.ShowMessage("Du har inga öppna konton hos banken", "yellow");
+            return;
+        }
+        
         Console.Clear();
         DisplayService.ShowHeader("Insättning");
         ShowAccountDetails(false);
@@ -270,7 +329,7 @@ public class CustomerMenu
             new SelectionPrompt<string>()
                 .Title("[blue]Välj alternativ:[/]")
                 .AddChoices(new[] { "Välj Konto", "Tillbaka" }));
-        
+
         switch (choice)
         {
             case "Välj Konto":
@@ -279,6 +338,7 @@ public class CustomerMenu
             case "Tillbaka":
                 return;
         }
+        
     }
     
     private void HandleLoanApplication()

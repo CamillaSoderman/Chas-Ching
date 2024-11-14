@@ -21,7 +21,6 @@ namespace Chas_Ching.Core.Models
             Amount = amount;
             FromAccount = fromAccount;
             ToAccount = toAccount;
-
             TransactionId = Guid.NewGuid();
             Date = DateTime.Now;
             Status = TransactionStatus.Pending;
@@ -69,7 +68,6 @@ namespace Chas_Ching.Core.Models
                 FromAccount.Withdraw(amountToDeduct);
                 ToAccount.Balance += amountToCredit;
                 Status = TransactionStatus.Completed;
-                TransactionLog.LogTransaction(this);
                 Console.WriteLine($"Transaction of {Amount} {FromCurrency} from Account {FromAccount.AccountId} to account {ToAccount.AccountId}  successfully. ");
             }
             else
@@ -78,7 +76,6 @@ namespace Chas_Ching.Core.Models
                 Status = TransactionStatus.Failed;
                 FromAccount.ReleaseFunds(Amount); // Släpp reserverade pengar vid fel
             }
-            TransactionLog.LogTransaction(this);
         }
     }
 }
