@@ -34,11 +34,11 @@ public class CustomerMenu
                 case MenuChoice.OpenNewAccount:
                     HandleOpenNewAccount();
                     break;
-                
+
                 case MenuChoice.OpenSavingsAccount:
                     HandleOpenSavingsAccount();
                     break;
-                
+
                 case MenuChoice.MakeDeposit:
                     HandleMakeDeposit();
                     break;
@@ -87,7 +87,7 @@ public class CustomerMenu
         {
             // Check which type the account is and set the accountType variable accordingly
             string accountType;
-                
+
             if (account.Type == AccountType.SavingsAccount)
             {
                 accountType = "[yellow]Sparkonto[/]";
@@ -124,8 +124,6 @@ public class CustomerMenu
             UIHelper.ShowContinuePrompt(); // Show a continue prompt after the table
         }
     }
-
-
 
     private void HandleTransactionMenu()
     {   // Responsible for handling the transaction menu
@@ -197,6 +195,7 @@ public class CustomerMenu
         UIHelper.ShowContinuePrompt();
         ShowPendingTransactions();
     }
+
     private void ShowHistoryTransactions()
     {
         Console.Clear();
@@ -244,7 +243,7 @@ public class CustomerMenu
     }
 
     private void ShowPendingTransactions()
-    {   
+    {
         // Responsible for displaying the pending transactions of the current customer
         Console.Clear();
         DisplayService.ShowHeader("Kommande transaktioner");
@@ -268,7 +267,7 @@ public class CustomerMenu
             .AddColumn(new TableColumn("Till konto").Centered())
             .AddColumn(new TableColumn("Belopp").RightAligned())
             .AddColumn(new TableColumn("Status").Centered())
-            .AddColumn(new TableColumn("Förväntad transaktion").Centered());
+            .AddColumn(new TableColumn("Förväntad transaktionkörning").Centered());
 
         // Loop through all pending transactions and add them to the table
         foreach (var transaction in pendingTransactions)
@@ -300,7 +299,7 @@ public class CustomerMenu
         // Call the OpenAccount method in Customer class
         _currentCustomer.OpenAccount();
     }
-    
+
     private void HandleOpenSavingsAccount()
     {   // Responsible for handling the savings account creation
         if (_currentCustomer == null)
@@ -315,13 +314,12 @@ public class CustomerMenu
 
     private void HandleMakeDeposit()
     {   // Responsible for handling the deposit
-        
         if (_currentCustomer.Accounts.Count == 0)
         {
             DisplayService.ShowMessage("Du har inga öppna konton hos banken", "yellow");
             return;
         }
-        
+
         Console.Clear();
         DisplayService.ShowHeader("Insättning");
         ShowAccountDetails(false);
@@ -335,12 +333,12 @@ public class CustomerMenu
             case "Välj Konto":
                 _currentCustomer.DepositToAccount();
                 break;
+
             case "Tillbaka":
                 return;
         }
-        
     }
-    
+
     private void HandleLoanApplication()
     {   // Responsible for handling the loan application
         if (_currentCustomer == null)

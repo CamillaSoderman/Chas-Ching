@@ -5,7 +5,6 @@
 │   │   ├── Account.cs
 │   │   ├── Admin.cs
 │   │   ├── Customer.cs
-│   │   ├── Loan.cs
 │   │   ├── SavingsAccount.cs
 │   │   ├── Transaction.cs
 │   │   ├── TransactionLog.cs

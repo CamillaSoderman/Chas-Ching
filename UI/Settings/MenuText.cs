@@ -8,12 +8,14 @@
     {
         // Main Menu
         CustomerLogin,
+
         AdminLogin,
         CreateNewAccount,
         Exit,
 
         // Costumer Menu
         ShowAccount,
+
         OpenNewAccount,
         OpenSavingsAccount,
         MakeDeposit,
@@ -24,6 +26,7 @@
 
         // Admin Menu
         CreateNewCustomer,
+
         ShowAllCustomers,
         LockUser,
         UnlockUser,
