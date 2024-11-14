@@ -16,7 +16,7 @@ public class AdminMenu
     {
         while (true)
         {
-            var choice = DisplayService.ShowMenu("Admin Menu", MenuText.GetAdminMenuChoices());
+            var choice = DisplayService.ShowMenu("Adminmeny", MenuText.GetAdminMenuChoices());
 
             switch (choice)
             {
@@ -45,10 +45,10 @@ public class AdminMenu
     private void CreateNewCustomer()
     {
         Console.Clear();
-        DisplayService.ShowHeader("Create new Customer");
+        DisplayService.ShowHeader("Skapa ny kund");
 
-        var userName = DisplayService.AskForInput("Enter user Name");
-        var userPassword = DisplayService.AskForInput("Enter user Password");
+        var userName = DisplayService.AskForInput("Mata in användarnamn");
+        var userPassword = DisplayService.AskForInput("Mata in lösenord");
         Admin.CreateUserCustomer(userName, userPassword);
         //var userPassword = DisplayService.AskForInput("Enter user Password");
         
@@ -60,7 +60,7 @@ public class AdminMenu
     private void ShowAllAccounts()
     {
         Console.Clear();
-        DisplayService.ShowHeader("All Accounts");
+        DisplayService.ShowHeader("Kundöversikt");
 
         var table = new Table()
             .AddColumn(new TableColumn("Account Number").Centered())

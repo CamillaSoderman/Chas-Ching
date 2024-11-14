@@ -123,6 +123,8 @@ public class CustomerMenu
         }
     }
 
+
+
     private void HandleTransactionMenu()
     {   // Responsible for handling the transaction menu
         Console.Clear();
