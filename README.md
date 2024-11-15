@@ -1,5 +1,5 @@
 # Chas-Ching 
-_A Console Bank Application in C#_
+_Chas-Ching is a console-based banking application developed in C#. It allows users to manage bank accounts, perform transactions, and simulate banking operations through a command-line interface._
 ## Core Classes < _Main folder for all logic_
 ### Enums < _Folder for different Enums/Constant values_
 - AccountType        
@@ -13,7 +13,7 @@ _A Console Bank Application in C#_
 - SavingsAccount
 - Transaction
 - TransactionLog
-- TransactionSchedular
+- TransactionScheduler
 - User
 - UserManagement
 ### Docs < _Folder for project documents_
