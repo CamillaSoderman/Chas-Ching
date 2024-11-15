@@ -33,7 +33,7 @@ namespace Chas_Ching.Core.Models
             //Check if accounts exist
             if (FromAccount == null || ToAccount == null)
             {
-                Console.WriteLine("Invalid Account, Transaction failed.");
+                Console.WriteLine("Ogiltigt konto, transaktion misslyckades.");
                 Status = TransactionStatus.Failed;
                 FromAccount?.ReleaseFunds(Amount); // Release reserved funds in case of error
                 return;
@@ -51,7 +51,7 @@ namespace Chas_Ching.Core.Models
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Currency conversion failed: {ex.Message}");
+                    Console.WriteLine($"Valuta omväxling misslyckades: {ex.Message}");
                     FromAccount.ReleaseFunds(Amount); // Release reserved funds in case of error
                     Status = TransactionStatus.Failed;
                     return;
@@ -68,11 +68,11 @@ namespace Chas_Ching.Core.Models
                 FromAccount.Withdraw(amountToDeduct);
                 ToAccount.Balance += amountToCredit;
                 Status = TransactionStatus.Completed;
-                Console.WriteLine($"Transaction of {Amount} {FromCurrency} from Account {FromAccount.AccountId} to account {ToAccount.AccountId}  successfully. ");
+                Console.WriteLine($"Transaktion av {Amount} {FromCurrency} från konto {FromAccount.AccountId} till konto {ToAccount.AccountId} är genomförd. ");
             }
             else
             {
-                Console.WriteLine("Transaction failed: Insufficient funds.");
+                Console.WriteLine("Transaktionen misslyckades: Otillräckliga medel.");
                 Status = TransactionStatus.Failed;
                 FromAccount.ReleaseFunds(Amount); // Släpp reserverade pengar vid fel
             }

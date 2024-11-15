@@ -137,17 +137,17 @@ public class AdminMenu
 
     private void HandleLockUser()
     {
-        HandleUserLockStatus("Lock", "Locking account...");
+        HandleUserLockStatus("Låst", "Låser konto...");
     }
 
     private void HandleUnlockUser()
     {
-        HandleUserLockStatus("Unlock", "Unlocking account...");
+        HandleUserLockStatus("Upplåst", "Låser upp konto...");
     }
 
     private void HandleUserLockStatus(string action, string progressMessage)
     {
-        var userId = DisplayService.AskForInput("Enter user ID");
+        var userId = DisplayService.AskForInput("Ange kund ID");
         bool isSuccess = true; // For demo purposes
 
         AnsiConsole.Status()
@@ -160,12 +160,12 @@ public class AdminMenu
         Console.Clear();
         if (isSuccess)
         {
-            DisplayService.ShowMessage($"Account {action.ToLower()}ed!", "green", showContinuePrompt: false);
+            DisplayService.ShowMessage($"Kontot är nu {action.ToLower()}!", "green", showContinuePrompt: false);
             AsciiArt.PrintSuccessLogo();
         }
         else
         {
-            DisplayService.ShowMessage($"Account {action.ToLower()}ing failed!", "red", showContinuePrompt: false);
+            DisplayService.ShowMessage($"Kontots försök att bli {action.ToLower()} misslyckades !", "red", showContinuePrompt: false);
             AsciiArt.PrintErrorLogo();
         }
         UIHelper.ShowContinuePrompt();
