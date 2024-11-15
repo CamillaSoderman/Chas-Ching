@@ -132,16 +132,21 @@ public class AdminMenu
 
     private void HandleLockUser()
     {
-        HandleUserLockStatus("Lock", "Låser konto...");
+        HandleUserLockStatus("Låst", "Låser konto...");
     }
 
     private void HandleUnlockUser()
     {
-        HandleUserLockStatus("Unlock", "Låser upp konto...");
+        HandleUserLockStatus("Upplåst", "Låser upp konto...");
+
     }
 
     private void HandleUserLockStatus(string action, string progressMessage)
     {
+
+        var userId = DisplayService.AskForInput("Ange kund ID");
+        bool isSuccess = true; // For demo purposes
+
         string userId = DisplayService.AskForInput("Skriv in användarnamn:");
         User user = UserManagement.FindUser(userId);
 
@@ -152,6 +157,7 @@ public class AdminMenu
             UIHelper.ShowContinuePrompt();
             return;
         }
+
 
         AnsiConsole.Status()
             .Spinner(Spinner.Known.Dots)
@@ -187,6 +193,18 @@ public class AdminMenu
                 }
             });
 
+
+        Console.Clear();
+        if (isSuccess)
+        {
+            DisplayService.ShowMessage($"Kontot är nu {action.ToLower()}!", "green", showContinuePrompt: false);
+            AsciiArt.PrintSuccessLogo();
+        }
+        else
+        {
+            DisplayService.ShowMessage($"Kontots försök att bli {action.ToLower()} misslyckades !", "red", showContinuePrompt: false);
+            AsciiArt.PrintErrorLogo();
+        }
         UIHelper.ShowContinuePrompt();
     }
 }

@@ -38,7 +38,7 @@ namespace Chas_Ching.Core.Models
             transactionTimer.Elapsed += OnTimerElapsed;
             transactionTimer.AutoReset = true;
             transactionTimer.Enabled = true;
-            Console.WriteLine("Transaction scheduler started.");
+            Console.WriteLine("Transaktions schemaläggare har startat.");
         }
 
         public void Stop()
@@ -48,7 +48,7 @@ namespace Chas_Ching.Core.Models
                 transactionTimer.Stop();
                 transactionTimer.Dispose();
                 transactionTimer = null;
-                Console.WriteLine("Transaction scheduler stopped.");
+                Console.WriteLine("Transaktions schemaläggare har stängsts av.");
             }
         }
 
@@ -75,14 +75,14 @@ namespace Chas_Ching.Core.Models
 
                             if (transaction.Status == TransactionStatus.Completed)
                             {
-                                Console.WriteLine($"Transaction {transaction.TransactionId} processed successfully.");
+                                Console.WriteLine($"Transaktion {transaction.TransactionId} har bearbetats framgångsrikt.");
                                 TransactionLog.LogTransaction(transaction);
                             }
                         }
                         catch (Exception ex)
                         {
                             transaction.RetryCount++;
-                            Console.WriteLine($"Transaction {transaction.TransactionId} failed: {ex.Message}.");
+                            Console.WriteLine($"Transaktion {transaction.TransactionId} avbruten: {ex.Message}.");
 
                             if (transaction.RetryCount < Transaction.MaxRetries)
                             {
@@ -90,7 +90,7 @@ namespace Chas_Ching.Core.Models
                             }
                             else
                             {
-                                Console.WriteLine($"Transaction {transaction.TransactionId} reached max retry limit");
+                                Console.WriteLine($"Transaktion {transaction.TransactionId} har nått gränsen för max antal försök.");
                                 transaction.Status = TransactionStatus.Failed;
                                 TransactionLog.LogTransaction(transaction);
                             }

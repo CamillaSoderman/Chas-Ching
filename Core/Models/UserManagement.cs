@@ -2,7 +2,9 @@
 {
     public class UserManagement
     {   // List of registered users
+
         public static readonly List<User> registeredUsers = new List<User>();
+
 
         public static User? FindUser(string userName)
         {   // Find a user by username. StringComparison.OrdinalIgnoreCase ignores case and returns the first match. Returns null if not found.
