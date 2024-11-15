@@ -143,8 +143,6 @@ public class AdminMenu
 
     private void HandleUserLockStatus(string action, string progressMessage)
     {
-
-        var userId = DisplayService.AskForInput("Ange kund ID");
         bool isSuccess = true; // For demo purposes
 
         string userId = DisplayService.AskForInput("Skriv in användarnamn:");

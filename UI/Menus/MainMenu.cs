@@ -232,7 +232,7 @@ public class MainMenu
         }
         else
         {   // Display error message if login fails
-            DisplayService.ShowMessage($"Login misslyckades! Kontrollera din {userName} och lösenord.", "red", showContinuePrompt: false);
+            DisplayService.ShowMessage($"Login misslyckades! Kontrollera ditt användarnamn och lösenord.", "red", showContinuePrompt: false);
             AsciiArt.PrintErrorLogo();
             UIHelper.ShowContinuePrompt();
         }
