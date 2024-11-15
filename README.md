@@ -1,42 +1,49 @@
 # Chas-Ching
-
-System Owner
-Unique Login Credentials for Users
-All users must log in with a unique username and password.
-Account Lockout After Failed Logins
-Users who fail to log in 3 times should be locked out from the system.
-
-
-Bank Administrator
-Ability to Create New Users
-Ability to create new users in the system.
-Update Currency Exchange Rates
-Responsible for updating the correct exchange rate for currency conversions daily.
-
-Bank Owner
-Currency Conversion for Transfers
-Transfers between accounts with different currencies should use the correct exchange rate.
-Limit on Loan Amounts
-Limit how much a customer can borrow—up to 5 times the amount they already have with the bank.
-Appealing and Clear App Design
-The app should have a clean design with clear menus, appropriate color schemes, and a stylish ASCII art logo visible at login.
-Batch Processing of Transactions
-Transactions should not occur immediately but instead be processed every 15 minutes.
-
-User
-View List of Accounts and Balances
-Ability to view a list of all bank accounts and their balances.
-Transfer Money Between Own Accounts
-Ability to transfer money between personal accounts.
-Transfer Money to Other Bank Customers
-Ability to transfer money to other customers within the bank.
-Open New Bank Accounts
-Ability to open new bank accounts.
-Foreign Currency Accounts
-Ability to open accounts in foreign currencies.
-Open Savings Accounts and View Interest
-Ability to open savings accounts and see how much interest will be earned on deposits.
-Borrow Money and View Loan Interest
-Ability to borrow money from the bank and see the interest rate for the loan.
-View Transfer Logs
-Ability to view a log of all transfers and account activities. 
+Chas-Ching/
+├── Chas-Ching.sln             # Solution file
+├── Program.cs                 # Entry point of the application
+├── Dockerfile                 # Docker configuration
+├── .dockerignore
+├── .gitattributes
+├── .gitignore
+├── README.md                  # Project documentation
+├── bin/                       # Compiled binaries
+├── obj/                       # Object files
+├── Dependencies/              # Project dependencies
+├── Imports/                   # External imports
+├── Properties/
+│   └── launchSettings.json    # Launch configurations
+├── Core/
+│   ├── Enums/
+│   │   ├── AccountType.cs         # Types of bank accounts
+│   │   ├── CurrencyType.cs        # Supported currencies
+│   │   └── TransactionStatus.cs   # Status of transactions
+│   └── Models/
+│       ├── Account.cs             # Account base class
+│       ├── Admin.cs               # Admin user model
+│       ├── CurrencyExchange.cs    # Currency exchange logic
+│       ├── Customer.cs            # Customer user model
+│       ├── SavingsAccount.cs      # Savings account model
+│       ├── Transaction.cs         # Transaction model
+│       ├── TransactionLog.cs      # Logging transactions
+│       ├── TransactionScheduler.cs# Scheduling future transactions
+│       ├── User.cs                # User base class
+│       └── UserManagement.cs      # Managing user accounts
+├── Docs/
+│   ├── BankAppStructure.md        # Documentation on app structure
+│   ├── ManualForSpectre.md        # Manual for Spectre.Console usage
+│   └── Utvecklingschecklista.md   # Development checklist
+├── UI/
+│   ├── Display/
+│   │   └── AsciiArt.cs            # ASCII art for UI
+│   ├── Menus/
+│   │   ├── AdminMenu.cs           # Menu for admin users
+│   │   ├── CustomerMenu.cs        # Menu for customer users
+│   │   └── MainMenu.cs            # Main menu interface
+│   ├── Services/
+│   │   └── DisplayService.cs      # Services for display operations
+│   ├── Settings/
+│   │   ├── AppSettings.cs         # Application settings
+│   │   ├── MenuText.cs            # Text content for menus
+│   │   └── UIHelper.cs            # Helper methods for UI
+└── README.md                      # This file
