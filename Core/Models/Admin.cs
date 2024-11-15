@@ -15,12 +15,11 @@
         //Create new customer as Admin
         public static void CreateUserCustomer(string userName, string userPassword)
         {
-            if (UserManagement.FindUser(userName) == null)      // Check if username is taken
-            {
-                Customer customer = new Customer(userName, userPassword);
-                UserManagement.registeredUsers.Add(customer);   // Add customer in list found in UserManagement
-                customer.OpenAccount();
-            }
+           
+               Customer customer = new Customer(userName, userPassword);
+               UserManagement.registeredUsers.Add(customer);
+               customer.OpenAccount();
+            
         }
     }
 }
