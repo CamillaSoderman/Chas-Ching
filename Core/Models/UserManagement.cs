@@ -1,44 +1,33 @@
-﻿using Chas_Ching.UI.Settings;
-using Chas_ChingDemo.UI.Display;
-using System.Text.RegularExpressions;
-
-namespace Chas_Ching.Core.Models
+﻿namespace Chas_Ching.Core.Models
 {
     public class UserManagement
     {   // List of registered users
-        public static readonly List<User> registeredUsers = new List<User>(); 
+
+        public static readonly List<User> registeredUsers = new List<User>();
+
 
         public static User? FindUser(string userName)
         {   // Find a user by username. StringComparison.OrdinalIgnoreCase ignores case and returns the first match. Returns null if not found.
-            return registeredUsers.Find(user => user.UserName.Equals(userName, StringComparison.OrdinalIgnoreCase)); //orginal 
-
-
+            return registeredUsers.Find(user => user.UserName.Equals(userName, StringComparison.OrdinalIgnoreCase)); //orginal
         }
 
         public static bool VerifyUser(string userName, string userPassword)
         {   // Method to verify if the user exists and is locked out. Increment login attempts if userPassword is incorrect
             var user = FindUser(userName); // Sets user to the user object if found, otherwise null
 
-
             if (user == null)
             {
-                Console.WriteLine($"Användaren {userName} finns inte");
                 return false;
             }
 
             if (user.IsUserLocked())
             {
-
-                Console.WriteLine($"Använderen {userName} är låste pga. 3 misslyckade inloggningsförsök");
                 return false;
             }
 
             // Validate userPassword and handle attempts
             if (user.UserPassword != userPassword)
             {
-
-                Console.WriteLine($"Ogiltig lösenord för användare {userName}");
-                user.IncrementLoginAttempts(); // Increment login attempts
                 return false;
             }
             return true; // Credentials are valid
@@ -116,11 +105,8 @@ namespace Chas_Ching.Core.Models
                 return (false, "Lösenordet får inte vara tomt.");
             }
             return (true, string.Empty); // Return true and an empty string if the userPassword is valid
-
-
         }
-
-    }   
+    }
 }
 
 // Note. Every class is static, so no instances of the class can be created. The methods are called directly on the class.

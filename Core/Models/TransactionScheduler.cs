@@ -9,12 +9,13 @@ namespace Chas_Ching.Core.Models
         private System.Timers.Timer transactionTimer; // Timer to schedule transaction processing. The intervall is fixed
         private readonly TimeSpan processingInterval; // Defines the interval between transaction processing
         private readonly object locker; // Ensures thread when locking the queue for processing transactions
-        public static int TransactionDelayMinutes { get; set; } = 1; // Transaction delay in minutes (15 min referense to backlog)
+        public static int TransactionDelayMinutes { get; set; } = 15; // Transaction delay in minutes (15 min referense to backlog)
 
         public static DateTime GetExpectedCompletionTime(DateTime transactionDate)
         {   // Helper method to calculate the expected completion time of a transaction
             return transactionDate.AddMinutes(TransactionDelayMinutes);
         }
+
         public TransactionScheduler()
         {
             pendingTransactions = new Queue<Transaction>();
@@ -58,7 +59,6 @@ namespace Chas_Ching.Core.Models
 
         public void ProcessPendingTransactions()
         {
-
             lock (locker)
             {
                 List<Transaction> retryTransactions = new List<Transaction>();

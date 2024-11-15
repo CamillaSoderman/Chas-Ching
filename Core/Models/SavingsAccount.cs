@@ -10,7 +10,7 @@ public class SavingsAccount : Account
     {
         InterestRate = 2.5m; // Default interest rate for a savings account
     }
-    
+
     // Placeholder for future implementation (Mao)
     public virtual void GetInterest(decimal amount)
     {

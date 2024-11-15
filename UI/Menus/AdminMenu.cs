@@ -11,6 +11,7 @@ public class AdminMenu
 {
     private Customer _customer;
     private int _customerID;
+    private bool isFirstRow = true;
 
     public AdminMenu(Admin admin)
     {
@@ -20,12 +21,12 @@ public class AdminMenu
     {
         while (true)
         {
-            var choice = DisplayService.ShowMenu("Adminmeny", MenuText.GetAdminMenuChoices());
+            var choice = DisplayService.ShowMenu("Admin Menu", MenuText.GetAdminMenuChoices());
 
             switch (choice)
             {
                 case MenuChoice.CreateNewCustomer:
-                    CreateNewCustomer(); 
+                    CreateNewCustomer();
                     break;
 
                 case MenuChoice.ShowAllCustomers:
@@ -49,36 +50,29 @@ public class AdminMenu
     private void CreateNewCustomer()
     {
         Console.Clear();
-        DisplayService.ShowHeader("Skapa ny kund");
+        DisplayService.ShowHeader("Create new Customer");
 
-        var userName = DisplayService.AskForInput("Mata in användarnamn");
-        var userPassword = DisplayService.AskForInput("Mata in lösenord");
+        var userName = DisplayService.AskForInput("Enter user Name");
+        var userPassword = DisplayService.AskForInput("Enter user Password");
         Admin.CreateUserCustomer(userName, userPassword);
         //var userPassword = DisplayService.AskForInput("Enter user Password");
-       
-
-
     }
 
     private void ShowAllCustomers(bool showPrompt = true)
     {
         Console.Clear();
-
-        DisplayService.ShowHeader("Visa alla kunder");
-
-      
-
+        DisplayService.ShowHeader("Visa alla kundkonton (Bankkonto/Sparkonto/Lånekonto)");
 
         var table = new Table()
+        .AddColumn(new TableColumn("Låst/Upplåst").Centered())
         .AddColumn(new TableColumn("Kund namn").RightAligned())
-        .AddColumn(new TableColumn("Kund.nr").RightAligned()) 
+        .AddColumn(new TableColumn("Kund.nr").RightAligned())
         .AddColumn(new TableColumn("Konto.nr").Centered())
         .AddColumn(new TableColumn("Totalt Saldo").RightAligned())
         .AddColumn(new TableColumn("Reserverat").RightAligned())
         .AddColumn(new TableColumn("Tillgängligt").RightAligned())
         .AddColumn(new TableColumn("Valuta").Centered())
         .AddColumn(new TableColumn("Konto Typ").Centered());
-
 
         table.BorderColor(Color.Blue);
 
@@ -92,25 +86,30 @@ public class AdminMenu
 
                 if (_customer.Accounts.Count == 0)
                 {   // If account list is empty, display a error message
-                    DisplayService.ShowMessage("Det finns inga öppna konton i banken", "yellow");
-                    return;
+                    DisplayService.ShowMessage("Det finns inga öppna konton i banken", "yellow", true);
+                    continue; // Skip customers without any accounts
                 }
+
+                // Set color depending on lock status
+                string lockStatus = _customer.IsLocked ? "[red]Låst[/]" : "[green]Upplåst[/]";
 
                 foreach (var account in _customer.Accounts)
                 {
-
                     //  Check if account is a Loan Account or Bank Account and set the account type
-                    string accountType = account.Type == AccountType.LoanAccount ?
-                            "[blue]Lånkonto[/]" :
-                            "[green]Bankkonto[/]";
+                    string accountType = account.Type switch
+                    {
+                        AccountType.LoanAccount => "[blue]Lånkonto[/]",
+                        AccountType.SavingsAccount => "[yellow]Sparkonto[/]",
+                        _ => "[green]Bankkonto[/]"
+                    };
 
                     // Make PendingAmount in yellow
                     string pendingAmountText = account.PendingAmount > 0
                         ? $"[yellow]{account.PendingAmount:F2}[/]"
                         : account.PendingAmount.ToString("F2");
 
-
                     table.AddRow(
+                            lockStatus,
                             customer.UserName.ToString(),
                             customer.userRandomId.ToString(),
                             account.AccountId.ToString(),
@@ -119,20 +118,16 @@ public class AdminMenu
                             account.GetBalance().ToString("F2"),
                             account.Currency.ToString(),
                             accountType);
-
                 }
             }
         }
-   
 
         AnsiConsole.Write(table);
-        UIHelper.ShowContinuePrompt();
 
         if (showPrompt)
         {
             UIHelper.ShowContinuePrompt(); // Show a continue prompt after the table
         }
-    
     }
 
     private void HandleLockUser()
@@ -143,19 +138,61 @@ public class AdminMenu
     private void HandleUnlockUser()
     {
         HandleUserLockStatus("Upplåst", "Låser upp konto...");
+
     }
 
     private void HandleUserLockStatus(string action, string progressMessage)
     {
+
         var userId = DisplayService.AskForInput("Ange kund ID");
         bool isSuccess = true; // For demo purposes
+
+        string userId = DisplayService.AskForInput("Skriv in användarnamn:");
+        User user = UserManagement.FindUser(userId);
+
+        if (user == null)
+        {
+            DisplayService.ShowMessage("Användaren finns inte", "red", showContinuePrompt: false);
+            AsciiArt.PrintErrorLogo();
+            UIHelper.ShowContinuePrompt();
+            return;
+        }
+
 
         AnsiConsole.Status()
             .Spinner(Spinner.Known.Dots)
             .Start(progressMessage, ctx =>
             {
                 Thread.Sleep(1000);
+
+                if (action == "Lock" && user.IsLocked)
+                {
+                    DisplayService.ShowMessage($"Användare {user.UserName} är redan låst", "yellow", showContinuePrompt: false);
+                    AsciiArt.PrintErrorLogo();
+                }
+                else if (action == "Unlock" && !user.IsLocked)
+                {
+                    DisplayService.ShowMessage($"Användare {user.UserName} är redan aktiv.", "yellow", showContinuePrompt: false);
+                    AsciiArt.PrintErrorLogo();
+                }
+                else
+                {
+                    if (action == "Lock")
+                    {
+                        user.IsLocked = true;
+                        DisplayService.ShowMessage($"Användare {user.UserName} är spärrad.", "green", showContinuePrompt: false);
+                        AsciiArt.PrintSuccessLogo();
+                    }
+                    else if (action == "Unlock")
+                    {
+                        user.IsLocked = false;
+                        user.ResetLoginAttempts(); // Reset login attempts
+                        DisplayService.ShowMessage($"Användare {user.UserName} är aktiv", "green", showContinuePrompt: false);
+                        AsciiArt.PrintSuccessLogo();
+                    }
+                }
             });
+
 
         Console.Clear();
         if (isSuccess)
