@@ -90,6 +90,8 @@
 
         public static (bool isValid, string errorMessage) IsPasswordValid(string userPassword)
         {   // Check if the userPassword is less than 5 characters
+            Console.WriteLine("Lösenord måste innehålla minst 1 stor och små bokstav med minst ett specialtecken.");
+
             if (userPassword.Length < 5)
             {
                 return (false, "Lösenordet måste vara minst 5 tecken långt.");

@@ -50,15 +50,37 @@ public class AdminMenu
     private void CreateNewCustomer()
     {
         Console.Clear();
-        DisplayService.ShowHeader("Create new Customer");
+        DisplayService.ShowHeader("Skapa ny kund");
 
-        var userName = DisplayService.AskForInput("Enter user Name");
-        var userPassword = DisplayService.AskForInput("Enter user Password");
-        Admin.CreateUserCustomer(userName, userPassword);
-        //var userPassword = DisplayService.AskForInput("Enter user Password");
+        var userName = DisplayService.AskForInput("Ange ditt Namn");
+        var (isValidName, errorMessageName) = UserManagement.IsUserNameValid(userName);
+        if (!isValidName)            // If password is valid 
+        {
+            Console.WriteLine(errorMessageName);
+           Console.ReadKey();
+            return;
+        }
+
+        var userPassword = DisplayService.AskForInput("Ange ditt lösenord");
+        var (isValidPassword, errorMessagePassword) = UserManagement.IsPasswordValid(userPassword);     // Get the bool to see if password is Valid
+        
+        if (!isValidPassword)                               //If password is not valid, as admin to rewrite password.
+        {
+            Console.WriteLine( errorMessagePassword );
+            Console.ReadKey();
+            return;
+        }
+        if (isValidName && isValidPassword)
+        {
+            Admin.CreateUserCustomer(userName, userPassword);           // Create Customer when inlogged as Admin
+            Console.WriteLine("Kund skapad.");
+
+        }
+
+        
     }
 
-    private void ShowAllCustomers(bool showPrompt = true)
+    private void ShowAllCustomers(bool showPrompt = true)       // Show all customers and their accounts
     {
         Console.Clear();
         DisplayService.ShowHeader("Visa alla kundkonton (Bankkonto/Sparkonto/Lånekonto)");
