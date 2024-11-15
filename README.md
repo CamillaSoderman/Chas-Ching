@@ -1,11 +1,11 @@
 # Chas-Ching 
-A Console Bank Application in C#
-## Core Classes
-### Enums // Folder for different Enums/Constant values
+_A Console Bank Application in C#_
+## Core Classes < _Main folder for all logic_
+### Enums < _Folder for different Enums/Constant values_
 - AccountType        
 - CurrencyType           
 - TransactionStatus
-### Models // Folder for 
+### Models < _Folder for_
 - Account
 - Admin
 - CurrencyExchange
@@ -16,27 +16,23 @@ A Console Bank Application in C#
 - TransactionSchedular
 - User
 - UserManagement
-### Docs
+### Docs < _Folder for project documents_
 - BankAppStructure
 - ManualForSpectre
 - Utvecklingschecklista
-## UI Classes
-### Display
+## UI Classes < _Main folder for all UI related code_
+### Display < _Folder for_
 - AsciiArt
-### Menus
+### Menus < _Folder for_
 - AdminMenu
 - CustomerMenu
 - MainMenu
-### Services
+### Services < _Folder for_
 - DisplayService
-### Settings
+### Settings < _Folder for_
 - AppSettings
 - MenuText
 - UIHelper
-
-
-
-
 ## Authors
-Camilla - Johannes - MJ - Noah - Mowitz - Jane
+[Camilla](https://github.com/CamillaSoderman) - [Johannes](https://github.com/JBrannelid) - [MJ](https://github.com/MJ-Eng-codes) - [Noah](https://github.com/NoahtlHoff) - [Mowitz](https://github.com/maoitz) - [Jane](https://github.com/jyneto)
 
